@@ -122,10 +122,17 @@ def send_email(stock_messages):
 
     msg.attach(MIMEText(body, 'plain'))
 
-    with smtplib.SMTP('smtp.gmail.com', 587) as server:
-        server.starttls()
-        server.login(sender_email, password)
-        server.sendmail(sender_email, receiver_emails, msg.as_string())
+    try:
+        with smtplib.SMTP('smtp.gmail.com', 587) as server:
+            print('SMTP Connection Established')
+            server.starttls()
+            print('TLS Started')
+            server.login(sender_email, password)
+            print('Logged in')
+            server.sendmail(sender_email, receiver_emails, msg.as_string())
+            print('Email Sent')
+    except Exception as e:
+        print('Error sending email:', e)
 
 if __name__ == "__main__":
     stock_symbols = ["GOOGL", "TSLA", "APLS", "PLNT", "CX", "WM", "VMC", "VZ", "VTI", "VB", "U", "TTWO", "TSM", "SE", "CRM", "RMCF", "RBLX", "RIVN", "RIOT", "RIO", "RSG", "PFE", "PARR", "OPK", "NEE", "NFGC", "MARA", "DOCU", "BURL", "SGML", "FIVE",
@@ -158,8 +165,7 @@ if __name__ == "__main__":
                      "OMC", "MKC", "ALB", "CMS", "EPAM", "JBL", "BRO", "AVY", "JBHT", "IEX", "J", "CINF", "WDC", "TER", "STX", "EQT", "TXT", "ESS", "SYF", "EG", "MAA", "POOL", "MAS", "CFG", "CE", "DGX", "SNA", "LW", "CF", "SWK", "BG", "BBY", "PKG", "TSN", "PODD", 
                      "LDOS", "MRO", "DPZ", "WRB", "K", "AMCR", "NDSN", "HST", "UAL", "CAG", "ZBRA", "KIM", "KEY", "RVTY", "LYV", "GEN", "TRMB", "LKQ", "LNT", "IP", "SJM", "VTRS", "IPG", "L", "AES", "TECH", "ROL", "JKHY", "MGM", "KMX", "CRL", "EVRG", "MOS", "TFX", 
                      "PNR", "TAP", "INCY", "UDR", "NRG", "APA", "WRK", "REG", "PEAK", "QRVO", "ALLE", "NI", "FFIV", "MKTX", "EMN", "GL", "CPT", "CDAY", "HII", "ETSY", "BXP", "PAYC", "CHRW", "CZR", "AOS", "HSIC", "BBWI", "JNPR", "MTCH", "RHI", "AAL", "HRL", 
-                     "UHS", "NWSA", "AIZ", "WYNN", "TPR", "CPB", "BEN", "NCLH", "BWA", "PNW", "GNRC", "IVZ", "CTLT", "FRT", "FMC", "PARA", "FOXA", "XRAY", "CMA", "BIO", "HAS", "WHR", "ZION", "VFC", "RL", "DVA", "MHK", "FOX", "NWS"
-                    ]
+                     "UHS", "NWSA", "AIZ", "WYNN", "TPR", "CPB", "BEN", "NCLH", "BWA", "PNW", "GNRC", "IVZ", "CTLT", "FRT", "FMC", "PARA", "FOXA", "XRAY", "CMA", "BIO", "HAS", "WHR", "ZION", "VFC", "RL", "DVA", "MHK", "FOX", "NWS"]
 
     current_date = datetime.datetime.now().strftime("%Y-%m-%d")
     current_datetime = datetime.datetime.strptime(current_date, "%Y-%m-%d")
@@ -171,18 +177,19 @@ if __name__ == "__main__":
 
     stock_messages = []  # Create a list to store formatted stock messages
 
-for stock_symbol in stock_symbols:
-    stock_data = download_stock_data(stock_symbol, start_date, end_date)
+    for stock_symbol in stock_symbols:
+        stock_data = download_stock_data(stock_symbol, start_date, end_date)
 
-    if not stock_data.empty and len(stock_data) > 0:
-        stock_data = calculate_technical_indicators(stock_data)
-        stock_data = calculate_buy_signals(stock_data, start_date, end_date)
-        buy_signals_within_range = check_buy_signals_within_range(stock_data, start_date, end_date)
-        promising_stocks = check_stock_analysis(stock_data, stock_symbol, buy_signals_within_range, stock_messages)
+        if not stock_data.empty and len(stock_data) > 0:
+            stock_data = calculate_technical_indicators(stock_data)
+            stock_data = calculate_buy_signals(stock_data, start_date, end_date)
+            buy_signals_within_range = check_buy_signals_within_range(stock_data, start_date, end_date)
+            promising_stocks = check_stock_analysis(stock_data, stock_symbol, buy_signals_within_range, stock_messages)
 
-if stock_messages:
-    send_email(stock_messages)
+    if stock_messages:
+        send_email(stock_messages)
 
-print('Stock Screening Complete; Email Sent')
+    print('Stock Screening Complete; Email Sent')
+
 
 
