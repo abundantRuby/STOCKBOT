@@ -89,10 +89,18 @@ def send_email(promising_stocks):
 
     msg.attach(MIMEText(body, 'plain'))
 
-    with smtplib.SMTP('smtp.gmail.com', 587) as server:
-        server.starttls()
-        server.login(sender_email, password)
-        server.sendmail(sender_email, receiver_emails, msg.as_string())
+    try:
+
+        with smtplib.SMTP('smtp.gmail.com', 587) as server:
+            print('SMTP Connection Established')
+            server.starttls()
+            print('TLS Started')
+            server.login(sender_email, password)
+            print('Logged in')
+            server.sendmail(sender_email, receiver_emails, msg.as_string())
+            print('Email Sent')
+    except Exception as e:
+        print('Error sending email:', e)
 
 if __name__ == "__main__":
     promising_stocks = []  # Initialize the list to store promising stocks
@@ -117,6 +125,7 @@ if __name__ == "__main__":
             check_stock_analysis(stock_data, stock_symbol)
 
     if promising_stocks:
+        print('Promising Stocks:', promising_stocks)
         send_email(promising_stocks)
         print('Stock screening finished; email sent')
     else:
