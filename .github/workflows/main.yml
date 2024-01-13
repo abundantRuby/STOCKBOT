@@ -1,24 +1,32 @@
-name: Create database backups on a CRON Schedule
+name: Run Daily Scripts
 
 on:
   schedule:
-    - cron: "00 8 * * *"
+    - cron: "0 8 * * *"
 
 jobs:
-  report:
+  run-scripts:
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
 
-      - name: Create a database dump
-        run: mysqldump --no-tablespaces --column-statistics=0h ${{ secrets.HOST }} -u ${{ secrets.USERNAME }} -p${{ secrets.PASSWORD }} ${{ secrets.DB_NAME }} > backup.sql
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.11
 
-      - name: Commit database dumps
+      - name: Install dependencies
         run: |
-          git config --global user.name ${{ secrets.USER_NAME }}
-          git config --global user.email ${{ secrets.USER_EMAIL }}
-          git add .
-          git commit -am "Automated database dump"
-          git push
+          python -m pip install --upgrade pip
+          # Add any other dependency installation commands here if needed
+
+      - name: Run buysignals.py
+        run: python buysignals.py
+
+      - name: Run sellsignals.py
+        run: python sellsignals.py
+
+
+
