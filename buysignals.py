@@ -143,7 +143,7 @@ if __name__ == "__main__":
                      "CEG", "EW", "TRV", "STM", "WDS", "D", "NUE", "LVS", "O", "DASH", "AME", "DOW", "ALL", "CVE", "SYY", "ARES", "SPOT", "CSGP", "A", "ED", "DD", "DVN", "ON", "FANG", "IR", "GOLD", "NTR", "ZS", "WST", "SPLK", "WBD", "MPWR", "CHPT",
                      "EC", "AWK", "GIB", "IX", "GRMN", "TEF", "TSCO", "HUBS", "DFS", "STT", "BR", "FE", "FTS", "MTB", "INVH", "OWL", "GPC", "TRGP", "ES", "SNAP", "IFF", "K", "MKL", "IRM", "WMG", "TSN", "CLX", "ATO", "JBL", "DECK", "ADT", "DNMR", "TEVA",
                      "TM", "HMC", "PII", "GOEV", "STLA", "GM", "NVO", "SNY", "HLN", "GSK", "RPRX", "ALNY", "CRH", "JHX", "USLM", "EXP", "MLM", "VMC", "SMID", "SUM", "SND", "NWPX", "COIN", "BYND", "EWBC", "PLTR", "QQQ", "TTD", "NU", "SOFI", "AFRM", "APPN",
-                     "SWN", "BBD", "CNM", "CCL", "ACIW", "NEM", "VALE", "GRAB", "KEY", "HWM", "TXT", "AXON", "LHX", "HEI", "NOC", "WWD", "CW", "CAE", "DRS", "ERJ", "MRCY", "ACHR", "CDRE", "SPCE", "PL", "SKYH", "ATRO", "PKE", "KITT", "TATT", "ASTR", "MNTS", "GPS"
+                     "SWN", "BBD", "CNM", "CCL", "ACIW", "NEM", "VALE", "GRAB", "KEY", "HWM", "TXT", "AXON", "LHX", "HEI", "NOC", "WWD", "CW", "CAE", "DRS", "ERJ", "MRCY", "ACHR", "CDRE", "SPCE", "PL", "SKYH", "ATRO", "PKE", "KITT", "TATT", "ASTR", "MNTS", "GPS",
                      "AAPL", "MSFT", "AMZN", "NVDA", "GOOGL", "META", "GOOG", "TSLA", "AVGO", "JPM", "UNH", "LLY", "V", "XOM", "JNJ", "HD", "MA", "PG", "COST", "ADBE", "ABBV", "MRK", "CVX", "CRM", "PEP", "BAC", "KO", "WMT", "AMD", "NFLX", "ACN", "MCD", 
                      "CSCO", "TMO", "LIN", "INTC", "ABT", "WFC", "CMCSA", "INTU", "DIS", "ORCL", "VZ", "QCOM", "PFE", "TXN", "DHR", "NKE", "CAT", "BA", "AMGN", "IBM", "UNP", "PM", "NOW", "SPGI", "COP", "GE", "HON", "AMAT", "LOW", "UBER", "GS", "NEE", "BKNG", "PLD", 
                      "T", "RTX", "MS", "ISRG", "UPS", "BLK", "SBUX", "ELV", "MDT", "AXP", "DE", "BMY", "VRTX", "TJX", "SCHW", "LRCX", "CVS", "AMT", "GILD", "LMT", "SYK", "C", "ADI", "ADP", "MDLZ", "PANW", "ETN", "MMC", "PGR", "REGN", "BX", "ZTS", "CB", "CI", "MU", 
@@ -171,17 +171,16 @@ if __name__ == "__main__":
 
     stock_messages = []  # Create a list to store formatted stock messages
 
-    for stock_symbol in stock_symbols:
-        stock_data = download_stock_data(stock_symbol, start_date, end_date)
+for stock_symbol in stock_symbols:
+    stock_data = download_stock_data(stock_symbol, start_date, end_date)
 
-        if not stock_data.empty and len(stock_data) > 0:
-            stock_data = calculate_technical_indicators(stock_data)
-            stock_data = calculate_buy_signals(stock_data, start_date, end_date)
-            buy_signals_within_range = check_buy_signals_within_range(stock_data, start_date, end_date)
-            promising_stocks = check_stock_analysis(stock_data, stock_symbol, buy_signals_within_range, stock_messages)
+    if not stock_data.empty and len(stock_data) > 0:
+        stock_data = calculate_technical_indicators(stock_data)
+        stock_data = calculate_buy_signals(stock_data, start_date, end_date)
+        buy_signals_within_range = check_buy_signals_within_range(stock_data, start_date, end_date)
+        promising_stocks = check_stock_analysis(stock_data, stock_symbol, buy_signals_within_range, stock_messages)
 
-if stock_messages:
-    send_email(stock_messages)
+send_email(stock_messages)
 
 print('Stock Screening Complete; Email Sent')
 
