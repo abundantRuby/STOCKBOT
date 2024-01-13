@@ -25,6 +25,7 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install yfinance
+          pip install TA-Lib  # This is for the talib module
           # Add any other dependency installation commands here if needed
 
       - name: Run buysignals.py
@@ -32,6 +33,7 @@ jobs:
 
       - name: Run sellsignals.py
         run: python sellsignals.py
+
 
 
 
