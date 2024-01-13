@@ -180,7 +180,8 @@ for stock_symbol in stock_symbols:
         buy_signals_within_range = check_buy_signals_within_range(stock_data, start_date, end_date)
         promising_stocks = check_stock_analysis(stock_data, stock_symbol, buy_signals_within_range, stock_messages)
 
-send_email(stock_messages)
+if stock_messages:
+    send_email(stock_messages)
 
 print('Stock Screening Complete; Email Sent')
 
