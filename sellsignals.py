@@ -1,13 +1,13 @@
 import yfinance as yf
 import pandas as pd
+import talib
 import numpy as np
-import scipy.signal
 import smtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 import datetime
 
-print('Stock screening started')
+print('Stock Screening for Sell Signals Started')
 
 def download_stock_data(stock_symbol, start_date, end_date):
     try:
@@ -24,7 +24,7 @@ def calculate_technical_indicators(stock_data):
     stock_data['SMA_200'] = stock_data['Close'].rolling(window=200).mean()
 
     rsi_period = 14
-    stock_data['RSI'] = 100 - (100 / (1 + (stock_data['Close'].diff(1).apply(lambda x: max(0, x)) / stock_data['Close'].diff(1).apply(lambda x: abs(min(0, x)))).rolling(window=rsi_period).mean()))
+    stock_data['RSI'] = talib.RSI(stock_data['Close'], timeperiod=rsi_period)
 
     stock_data['Support_Level'] = stock_data['Low'].rolling(window=50).min()
     stock_data['Resistance_Level'] = stock_data['High'].rolling(window=50).max()
@@ -32,104 +32,99 @@ def calculate_technical_indicators(stock_data):
     # Calculate the Stochastic Oscillator
     stoch_period = 14
     stock_data['%K'] = 100 * ((stock_data['Close'] - stock_data['Low'].rolling(window=stoch_period).min()) /
-                               (stock_data['High'].rolling(window=stoch_period).max() - stock_data['Low'].rolling(window=stoch_period).min()))
+                              (stock_data['High'].rolling(window=stoch_period).max() -
+                               stock_data['Low'].rolling(window=stoch_period).min()))
+
     stock_data['%D'] = stock_data['%K'].rolling(window=3).mean()
 
     return stock_data
 
-def calculate_sell_signals(stock_data):
-    # Use scipy to find peaks in the data
-    peaks, _ = scipy.signal.find_peaks(stock_data['Close'], height=stock_data['Close'].quantile(0.95))
-
-    # Check for conditions for sell signals
+def check_sell_signals(stock_data):
     sell_signals = (
         (stock_data['SMA_50'] < stock_data['SMA_200']) &
         (stock_data['RSI'] > 70) &
         (stock_data['Close'] < stock_data['Resistance_Level']) &
         (stock_data['%K'] < stock_data['%D']) &
-        (stock_data['%K'] > 70) |
-        (stock_data.index.isin(peaks))  # additional condition for peaks
+        (stock_data['%K'] > 70)
+    ) | (
+        (stock_data['RSI'] > 73) &
+        (stock_data['SMA_50'] > stock_data['SMA_200']) &
+        (stock_data['%K'] > 73)  # other conditions
     )
 
     stock_data['Sell_Signal'] = np.where(sell_signals, stock_data['Close'], None)
 
     return stock_data
 
-def check_stock_analysis(stock_data, stock_symbol):
-    global promising_stocks  # Declare the list as global to accumulate across stock symbols
+def check_stock_analysis(stock_data, stock_symbol, sell_signals, stock_messages):
     if not stock_data.empty and len(stock_data) > 0:
         last_row = stock_data.iloc[-1]
-        if last_row['Sell_Signal']:
+        if sell_signals.iloc[-1]:
             messages = [
                 f"{stock_symbol} is showing sell signals 📉",
-                f"{stock_symbol} is indicating potential downward movement ⬇️",
-                f"{stock_symbol} is flashing red flags for selling 🚨",
-                f"{stock_symbol} might be a good candidate for selling 🛑",
-                f"{stock_symbol} is signaling a possible sell-off 📉",
-                f"{stock_symbol} is giving sell indications 📉",
-                f"{stock_symbol} is on the radar for potential selling opportunities 📉",
-                f"{stock_symbol} is showing signs of a downturn 📉",
+                f"{stock_symbol} might be showing an exit opportunity 🚪",
+                f"{stock_symbol} is signaling a potential downturn ⬇️",
+                f"{stock_symbol} is waving a red flag 🚩",
+                f"{stock_symbol} is displaying sell indicators ⚠️",
+                f"{stock_symbol} is on a sell trajectory 🔻",
+                f"{stock_symbol} is on the sellers' radar 🚨",
+                f"{stock_symbol} is in a bearish route 🐻",
+                f"{stock_symbol} is suggesting a sell opportunity 📉",
+                f"{stock_symbol} is signaling a bearish trend 🐾",
+                f"{stock_symbol} is in the sell zone 📊",
+                f"{stock_symbol} is on the sellers' watchlist 🚨",
             ]
-            promising_stocks.append(stock_symbol)
-            print(np.random.choice(messages))
+            random_message = np.random.choice(messages)
+            stock_messages.append(f"{random_message}")
 
-def send_email(promising_stocks):
-    sender_email = "iamdylanhoag@gmail.com"
-    receiver_emails = ["dysco712@gmail.com", "iamdylanhoag@gmail.com"]
-    password = "hwys aypg refe luea"
+def send_email(stock_messages):
+    sender_email = "iamdylanhoag@gmail.com"  # Replace with your email
+    receiver_email = "dysco712@gmail.com"  # Replace with recipient's email
+    password = "hwys aypg refe luea"  # Replace with your email password
 
     msg = MIMEMultipart()
     msg['From'] = sender_email
-    msg['To'] = ", ".join(receiver_emails)
-    msg['Subject'] = "Sell Signals"
+    msg['To'] = receiver_email
+    msg['Subject'] = "Stock Sell Signals Today"
 
-    body = "We have found some sell signals from multiple portfolios:\n\n"
-    body += "\n".join(promising_stocks)
+    # Combine stock symbols and random messages in the email body
+    body = "Here are the stocks with sell signals today!\n\n"
+    body += "\n".join(stock_messages)
     body += "\n\nBest regards,\nYour Trading Bot"
 
     msg.attach(MIMEText(body, 'plain'))
 
-    try:
-
-        with smtplib.SMTP('smtp.gmail.com', 587) as server:
-            print('SMTP Connection Established')
-            server.starttls()
-            print('TLS Started')
-            server.login(sender_email, password)
-            print('Logged in')
-            server.sendmail(sender_email, receiver_emails, msg.as_string())
-            print('Email Sent')
-    except Exception as e:
-        print('Error sending email:', e)
+    with smtplib.SMTP('smtp.gmail.com', 587) as server:
+        server.starttls()
+        server.login(sender_email, password)
+        server.sendmail(sender_email, receiver_email, msg.as_string())
 
 if __name__ == "__main__":
-    promising_stocks = []  # Initialize the list to store promising stocks
-    stock_symbols = ["APLS", "BROS", "ENPH", "NEE", "ON", "RIVN", "ALLY", "GOLD", "F", "GSK", "PLNT", "PAVE", "HLN", "IRBO", "O", "DAL", "BWA", "YUMC", "AON", "HUM", "SJM", "BMY", "FLO"]
-
-    # ... (rest of your stock symbol list)
+    stock_symbols = ["DAL", "RIVN", "BWA", "ENPH", "F", "ALLY", "ON", "BROS", "O", "IRBO", "HLN", "PAVE", "PLNT", "NEE", "GSK", "GOLD", "HUM", "AON", "YUMC", "RIO", "BMY", "FLO", "SJM"]  # Replace with your stock symbols
 
     current_date = datetime.datetime.now().strftime("%Y-%m-%d")
     current_datetime = datetime.datetime.strptime(current_date, "%Y-%m-%d")
     next_day_datetime = current_datetime + datetime.timedelta(days=1)
     next_day_date = next_day_datetime.strftime("%Y-%m-%d")
 
-    start_date = "2022-01-11"  # YYYY-MM-DD
+    start_date = "2022-01-11"  # Replace with your desired start date
     end_date = next_day_date
+
+    stock_messages = []  # Create a list to store formatted stock messages
 
     for stock_symbol in stock_symbols:
         stock_data = download_stock_data(stock_symbol, start_date, end_date)
 
         if not stock_data.empty and len(stock_data) > 0:
             stock_data = calculate_technical_indicators(stock_data)
-            stock_data = calculate_sell_signals(stock_data)
-            check_stock_analysis(stock_data, stock_symbol)
+            stock_data = check_sell_signals(stock_data)
+            check_stock_analysis(stock_data, stock_symbol, stock_data['Sell_Signal'].notnull(), stock_messages)
 
-    if promising_stocks:
-        print('Promising Stocks:', promising_stocks)
-        send_email(promising_stocks)
-        print('Stock screening finished; email sent')
+    if stock_messages:
+        send_email(stock_messages)
+        print('Sell Signals Detected. Email Sent')
     else:
-        print('Stock screening finished; no results found and no email sent')
+        print('No Sell Signals Found.')
 
 
 
