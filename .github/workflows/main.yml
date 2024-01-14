@@ -28,9 +28,6 @@ jobs:
           pip install yfinance
           # Add any other dependency installation commands here if needed
 
-      - name: Run buysignals.py
-        run: python buysignals.py
-
       - name: Run sellsignals.py
         run: python sellsignals.py
 
