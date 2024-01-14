@@ -1,8 +1,8 @@
 # STOCKBOT
 
-Made by Dylan Hoag
-Text (208)-989-8541
-Email dysco712@gmail.com
+Made by Dylan Hoag  
+Text (208)-989-8541  
+Email dysco712@gmail.com  
 
 ## Main Programs
 
