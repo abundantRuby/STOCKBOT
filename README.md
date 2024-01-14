@@ -107,12 +107,10 @@ Individual-Screener.py Overview:
 
 The Individual Screener is designed for in-depth analysis of individual stocks. It utilizes various technical indicators to provide insights into potential buy and sell signals, and displays all data on a visual graph.
 
-Example: PLNT (Planet Fitness)
+Example 1: PLNT (Planet Fitness)
 ![Stock Analysis](https://i.ibb.co/4WwdH2K/plnt.png)
-Example: APLS (Apellis Pharma)
+Example 2: APLS (Apellis Pharma)
 ![Stock Analysis](https://i.ibb.co/KLPg18K/apls.png)
-Example: AMZN (Amazon)
-![Stock Analysis](https://i.ibb.co/nrDJKbL/amzn.png)
 
 
 
