@@ -42,14 +42,16 @@ def calculate_technical_indicators(stock_data):
 def check_sell_signals(stock_data):
     sell_signals = (
         (stock_data['SMA_50'] < stock_data['SMA_200']) &
-        (stock_data['RSI'] > 70) &
+        (stock_data['RSI'] > 68) &
         (stock_data['Close'] < stock_data['Resistance_Level']) &
         (stock_data['%K'] < stock_data['%D']) &
-        (stock_data['%K'] > 70)
+        (stock_data['%K'] > 68)
     ) | (
-        (stock_data['RSI'] > 73) &
+        (stock_data['RSI'] > 75) &
         (stock_data['SMA_50'] > stock_data['SMA_200']) &
-        (stock_data['%K'] > 73)  # other conditions
+        (stock_data['%K'] > 75)  # other conditions
+    ) | (
+        (stock_data['RSI'] > 82)
     )
 
     stock_data['Sell_Signal'] = np.where(sell_signals, stock_data['Close'], None)
@@ -82,10 +84,13 @@ def send_email(stock_messages):
     receiver_email = "dysco712@gmail.com"  # Replace with recipient's email
     password = "hwys aypg refe luea"  # Replace with your email password
 
+    current_datetime = datetime.datetime.now()
+    day_of_week = current_datetime.strftime("%A")
+
     msg = MIMEMultipart()
     msg['From'] = sender_email
     msg['To'] = receiver_email
-    msg['Subject'] = "Stock Sell Signals Today"
+    msg['Subject'] = f"{day_of_week} Sell Signals"
 
     # Combine stock symbols and random messages in the email body
     body = "Here are the stocks with sell signals today!\n\n"
@@ -98,6 +103,10 @@ def send_email(stock_messages):
         server.starttls()
         server.login(sender_email, password)
         server.sendmail(sender_email, receiver_email, msg.as_string())
+
+def is_weekend():
+    today = datetime.date.today()
+    return today.weekday() in [5, 6]  # 5 is Saturday, 6 is Sunday
 
 if __name__ == "__main__":
     stock_symbols = ["DAL", "RIVN", "BWA", "ENPH", "F", "ALLY", "ON", "BROS", "O", "IRBO", "HLN", "PAVE", "PLNT", "NEE", "GSK", "GOLD", "HUM", "AON", "YUMC", "RIO", "BMY", "FLO", "SJM"]  # Replace with your stock symbols
@@ -124,7 +133,9 @@ if __name__ == "__main__":
         send_email(stock_messages)
         print('Sell Signals Detected. Email Sent')
     else:
-        print('No Sell Signals Found.')
+        print('No Sell Signals Found; No Email Sent')
+        if is_weekend():
+            print("It's the weekend. Market might be closed.")
 
 
 
