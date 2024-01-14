@@ -59,7 +59,7 @@ def send_email(stock_messages):
     msg['To'] = receiver_email
     msg['Subject'] = f"{day_of_week} Sell Signals"
 
-    # Combine stock symbols and random messages in the email body
+    # Generates the email body
     body = "Here are the stocks with sell signals today!\n\n"
     body += "\n".join(stock_messages)
     body += "\n\nBest regards,\nYour Trading Bot"
