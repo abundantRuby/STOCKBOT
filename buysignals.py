@@ -186,7 +186,7 @@ if __name__ == "__main__":
 
         if not stock_data.empty and len(stock_data) > 0:
             stock_data = calculate_technical_indicators(stock_data)
-            stock_data = calculate_buy_signals(stock_data)  # No need to pass start_date and end_date here
+            stock_data = calculate_buy_signals(stock_data)
             buy_signals_within_range = check_buy_signals_within_range(stock_data, start_date, end_date)
             promising_stocks = check_stock_analysis(stock_data, stock_symbol, buy_signals_within_range, stock_messages)
 
