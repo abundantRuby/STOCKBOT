@@ -1,12 +1,13 @@
 import yfinance as yf
 import pandas as pd
+import talib
 import numpy as np
 import smtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 import datetime
 
-print('Stock Screening Has Started')
+print('Stock Screening Started')
 
 def download_stock_data(stock_symbol, start_date, end_date):
     try:
@@ -23,7 +24,7 @@ def calculate_technical_indicators(stock_data):
     stock_data['SMA_200'] = stock_data['Close'].rolling(window=200).mean()
 
     rsi_period = 14
-    stock_data['RSI'] = 100 - (100 / (1 + (stock_data['Close'].diff(1).apply(lambda x: max(0, x)) / stock_data['Close'].diff(1).apply(lambda x: abs(min(0, x)))).rolling(window=rsi_period).mean()))
+    stock_data['RSI'] = talib.RSI(stock_data['Close'], timeperiod=rsi_period)
 
     stock_data['Support_Level'] = stock_data['Low'].rolling(window=50).min()
     stock_data['Resistance_Level'] = stock_data['High'].rolling(window=50).max()
@@ -31,7 +32,9 @@ def calculate_technical_indicators(stock_data):
     # Calculate the Stochastic Oscillator
     stoch_period = 14
     stock_data['%K'] = 100 * ((stock_data['Close'] - stock_data['Low'].rolling(window=stoch_period).min()) /
-                               (stock_data['High'].rolling(window=stoch_period).max() - stock_data['Low'].rolling(window=stoch_period).min()))
+                              (stock_data['High'].rolling(window=stoch_period).max() -
+                               stock_data['Low'].rolling(window=stoch_period).min()))
+
     stock_data['%D'] = stock_data['%K'].rolling(window=3).mean()
 
     return stock_data
@@ -47,13 +50,23 @@ def check_buy_signals_within_range(stock_data, start_date, end_date):
     )
     return buy_signals_within_range.sum() > 0
 
-def calculate_buy_signals(stock_data, start_date, end_date):
-    conditions = (stock_data['SMA_50'].shift(1) > stock_data['SMA_200'].shift(1)) & \
-                  (stock_data['Close'].shift(1) > stock_data['Support_Level'].shift(1)) & \
-                  (stock_data['%K'].shift(1) > stock_data['%D'].shift(1)) & \
-                  (stock_data['%K'].shift(1) < 30)
-    conditions_past_7_days = conditions.fillna(0).rolling(window=7).sum() > 0
-    stock_data['Buy_Signal'] = np.where(conditions_past_7_days, stock_data['Close'], None)
+def calculate_buy_signals(stock_data):
+    condition_1 = (stock_data['SMA_50'] > stock_data['SMA_200']) & \
+                  (stock_data['RSI'] < 33) & \
+                  (stock_data['Close'] > stock_data['Support_Level']) & \
+                  (stock_data['%K'] > stock_data['%D']) & \
+                  (stock_data['%K'] < 33)
+
+    condition_2 = (stock_data['RSI'] < 28) & \
+                  (stock_data['SMA_50'] < stock_data['SMA_200']) & \
+                  (stock_data['%K'] < 28)
+    
+    condition_3 = (
+        (stock_data['RSI'] < 24)
+    )
+
+    buy_signals = condition_1 | condition_2 | condition_3
+    stock_data['Buy_Signal'] = np.where(buy_signals, stock_data['Close'], None)
 
     return stock_data
 
@@ -65,15 +78,18 @@ def check_stock_analysis(stock_data, stock_symbol, buy_signals_within_range, sto
             last_row['SMA_50'] > last_row['SMA_200'] and
             last_row['Close'] > last_row['Support_Level'] and
             last_row['%K'] > last_row['%D'] and
-            last_row['%K'] < 36 and
-            last_row['RSI'] < 36
+            last_row['%K'] < 32 and
+            last_row['RSI'] < 32
         )
         second_condition = (
-            last_row['RSI'] < 30 and
+            last_row['RSI'] < 28 and
             last_row['SMA_50'] < last_row['SMA_200'] and
-            last_row['%K'] < 30  # other conditions
+            last_row['%K'] < 28  # other conditions
         )
-        if second_condition or other_conditions:
+        third_condition = (
+            last_row['RSI'] < 23
+        )
+        if second_condition or other_conditions or third_condition:
 
             messages = [
                 f"{stock_symbol} is looking goated 🐐",
@@ -101,71 +117,59 @@ def check_stock_analysis(stock_data, stock_symbol, buy_signals_within_range, sto
 
     return promising_stocks
 
-current_date = datetime.datetime.now()
-day_of_week = current_date.weekday()
-day_name = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'][day_of_week]
-
 def send_email(stock_messages):
     sender_email = "iamdylanhoag@gmail.com"
-    receiver_emails = ["dysco712@gmail.com", "iamdylanhoag@gmail.com"]
+    receiver_email = "dysco712@gmail.com"
     password = "hwys aypg refe luea"
+
+    current_datetime = datetime.datetime.now()
+    day_of_week = current_datetime.strftime("%A")
 
     msg = MIMEMultipart()
     msg['From'] = sender_email
-    msg["To"] = ", ".join(receiver_emails)
-    msg['Subject'] = (f"{day_name} Promising Stocks")
+    msg['To'] = receiver_email
+    msg['Subject'] = f"{day_of_week} Buy Signals"
 
     # Combine stock symbols and random messages in the email body
     body = "Here are the stocks for today!\n\n"
     body += "\n".join(stock_messages)
-    body += "\nBest regards,\nYour Trading Bot"
+    body += "\n\nBest regards,\nYour Trading Bot"
 
     msg.attach(MIMEText(body, 'plain'))
 
-    try:
-        with smtplib.SMTP('smtp.gmail.com', 587) as server:
-            print('SMTP Connection Established')
-            server.starttls()
-            print('TLS Started')
-            server.login(sender_email, password)
-            print('Logged in')
-            server.sendmail(sender_email, receiver_emails, msg.as_string())
-            print('Email Sent')
-    except Exception as e:
-        print('Error sending email:', e)
+    with smtplib.SMTP('smtp.gmail.com', 587) as server:
+        server.starttls()
+        server.login(sender_email, password)
+        server.sendmail(sender_email, receiver_email, msg.as_string())
+
+def is_weekend():
+    today = datetime.date.today()
+    return today.weekday() in [5, 6]  # 5 is Saturday, 6 is Sunday
 
 if __name__ == "__main__":
-    stock_symbols = ["GOOGL", "TSLA", "APLS", "PLNT", "CX", "WM", "VMC", "VZ", "VTI", "VB", "U", "TTWO", "TSM", "SE", "CRM", "RMCF", "RBLX", "RIVN", "RIOT", "RIO", "RSG", "PFE", "PARR", "OPK", "NEE", "NFGC", "MARA", "DOCU", "BURL", "SGML", "FIVE",
-                     "LYFT", "LANC", "JYNT", "JNJ", "XT", "ICE", "PI", "HMC", "GPRO", "GE", "EXAS", "EDR", "DO", "DDOG", "KO", "NET", "CVX", "BN", "SQ", "BLK", "BVS", "AESI", "ANET", "AAL", "ANF", "META", "KNF", "PXD", "BHP", "MTD", "CRSR",
-                     "LLY", "V", "JPM", "PG", "HD", "BABA", "BAC", "PEP", "CRM", "NVS", "MCD", "SAP", "TMUS", "TTE", "ABT", "VZ", "PM", "COP", "TXN", "MS", "GE", "SPGI", "HON", "UPS", "RTX", "UL", "CAT", "T", "LMT", "ASR", "FVRR", "PACB", "CSX",
-                      "UBER", "AZN", "CVS", "PANW", "UNH", "XOM", "AVGO", "MA", "MRK", "ABBV", "WMT", "ACN", "LIN", "AMD", "TMO", "DIS", "PM",  "IBM", "NKE", "NOW", "BMY", "ELV", "VRTX", "MMC", "RCL", "STEM", "ZTO", "RHP",
-                     "SYK", "CI", "CB", "AMT", "SLB", "MU", "BSX", "FI", "MO", "DUK", "CDNS", "NOC", "ITW", "SHW", "GD", "USB", "MMM", "TT", "LULU", "F", "LCID", "NIO", "PSA", "YUM", "EA", "CRSP", "SPB", "HOG",
-                     "CMI", "KR", "VMC", "HPE", "MRO", "CLX", "BG", "BALL", "ARE", "PFG", "WBA", "EQT", "TXT", "CF", "OMC", "WAT", "DGX", "HUBB", "RF", "IEX", "AVY", "SWKS", "SNA", "JBHT", "EMR", "PYPL", "GLOB", "OC", "YUMC",
-                     "PKG", "ALGN", "MAA", "LDOS", "EPAM", "ALB", "LUV", "WRB", "STX", "WDC", "ESS", "K", "LW", "AMCR", "TSN", "SWK", "CAG", "BBY", "DPZ", "POOL", "LNT", "SYF", "CCL", "MAS", "CFG", "APA", "L", "LYV", "HST", "LKQ", "CE", "CNQ", "UL", "DLB", "AAP",
-                     "NDSN", "EVRG", "SJM", "TER", "LW", "AES", "MOS", "MGM", "ENPH", "ROL", "ZBRA", "JKHY", "KEY", "NRG", "KMX", "TRMB", "NI", "INCY", "GL", "REG", "TFX", "PNR", "CDAY", "UDR", "GEN", "WRK", "CPT", "CZR", "TDG", "KTOS", "NOC", "HAE", "RLJ",
-                     "HII", "TECH", "CRL", "PEAK", "EMN", "ALLE", "AOS", "QRVO", "AIZ", "MKTX", "RHI", "HSIC", "PNW", "UHS", "BXP", "CPB", "MTCH", "FOXA", "PAYC", "BWA", "ETSY", "AAL", "BBWI", "FMC", "FRT", "BEN", "GNRC", "TPR", "RNR", 
-                     "CTLT", "IVZ", "PARA", "WHR", "BIO", "HAS", "CMA", "NCLH", "VFC", "SEE", "RL", "DVA", "MHK", "ALK", "SEDG", "FOX", "NWS", "PG", "MRK", "RHHBY", "VZ", "DUK", "CL", "KMB", "HSY", "GIS", "XEL", "ORAN", "ED", "WEC", "VFS", "SRPT",
-                     "AEE", "K", "HRL", "CMS", "KKPNY", "CPB", "FLO", "PNM", "NEA", "NAD", "BTT", "SAFT", "WM", "CL", "PG", "DIS", "HON", "CAT", "RY", "SONY", "ADP", "ETN", "CVS", "REGN", "C", "UBS", "ABNB", "FSR", "RACE", "MELI", "FDX", "CMG", "MAR", "SCCO", "INN",
-                     "MPC", "SNOW", "MSI", "TT", "TGT", "PSX", "RSG", "APO", "TEAM", "KDP", "HLT", "AEP", "SGEN", "BUD", "BLK", "AZN", "SHOP", "PINS", "BX", "ECL", "HES", "VLO", "DHI", "ET", "LNG", "STZ", "JD", "GWW", "DLR",
-                     "CEG", "EW", "TRV", "STM", "WDS", "D", "NUE", "LVS", "O", "DASH", "AME", "DOW", "ALL", "CVE", "SYY", "ARES", "SPOT", "CSGP", "A", "ED", "DD", "DVN", "ON", "FANG", "IR", "GOLD", "NTR", "ZS", "WST", "SPLK", "WBD", "MPWR", "CHPT",
-                     "EC", "AWK", "GIB", "IX", "GRMN", "TEF", "TSCO", "HUBS", "DFS", "STT", "BR", "FE", "FTS", "MTB", "INVH", "OWL", "GPC", "TRGP", "ES", "SNAP", "IFF", "K", "MKL", "IRM", "WMG", "TSN", "CLX", "ATO", "JBL", "DECK", "ADT", "DNMR", "TEVA",
-                     "TM", "HMC", "PII", "GOEV", "STLA", "GM", "NVO", "SNY", "HLN", "GSK", "RPRX", "ALNY", "CRH", "JHX", "USLM", "EXP", "MLM", "VMC", "SMID", "SUM", "SND", "NWPX", "COIN", "BYND", "EWBC", "PLTR", "QQQ", "TTD", "NU", "SOFI", "AFRM", "APPN",
-                     "SWN", "BBD", "CNM", "CCL", "ACIW", "NEM", "VALE", "GRAB", "KEY", "HWM", "TXT", "AXON", "LHX", "HEI", "NOC", "WWD", "CW", "CAE", "DRS", "ERJ", "MRCY", "ACHR", "CDRE", "SPCE", "PL", "SKYH", "ATRO", "PKE", "KITT", "TATT", "ASTR", "MNTS", "GPS",
-                     "AAPL", "MSFT", "AMZN", "NVDA", "GOOGL", "META", "GOOG", "TSLA", "AVGO", "JPM", "UNH", "LLY", "V", "XOM", "JNJ", "HD", "MA", "PG", "COST", "ADBE", "ABBV", "MRK", "CVX", "CRM", "PEP", "BAC", "KO", "WMT", "AMD", "NFLX", "ACN", "MCD", 
-                     "CSCO", "TMO", "LIN", "INTC", "ABT", "WFC", "CMCSA", "INTU", "DIS", "ORCL", "VZ", "QCOM", "PFE", "TXN", "DHR", "NKE", "CAT", "BA", "AMGN", "IBM", "UNP", "PM", "NOW", "SPGI", "COP", "GE", "HON", "AMAT", "LOW", "UBER", "GS", "NEE", "BKNG", "PLD", 
-                     "T", "RTX", "MS", "ISRG", "UPS", "BLK", "SBUX", "ELV", "MDT", "AXP", "DE", "BMY", "VRTX", "TJX", "SCHW", "LRCX", "CVS", "AMT", "GILD", "LMT", "SYK", "C", "ADI", "ADP", "MDLZ", "PANW", "ETN", "MMC", "PGR", "REGN", "BX", "ZTS", "CB", "CI", "MU", 
-                     "SNPS", "BSX", "FI", "TMUS", "KLAC", "SO", "CME", "SLB", "EQIX", "DUK", "CDNS", "SHW", "MO", "EOG", "ITW", "ICE", "BDX", "CSX", "PYPL", "USB", "NOC", "WM", "CL", "CMG", "TGT", "ABNB", "MCO", "PNC", "APD", "MCK", "FCX", "PSX", "AON", "ANET", 
-                     "MPC", "LULU", "APH", "PH", "NXPI", "MMM", "FDX", "ROP", "GD", "ORLY", "HUM", "TT", "TDG", "EMR", "MAR", "PXD", "HCA", "NSC", "MSI", "ADSK", "PCAR", "CCI", "ECL", "WELL", "COF", "GM", "MCHP", "CTAS", "TFC", "NEM", "AJG", "SPG", "CARR", "AIG", 
-                     "F", "PSA", "SRE", "AZO", "ROST", "HLT", "DXCM", "VLO", "DHI", "EW", "IDXX", "NUE", "TEL", "AFL", "MSCI", "AEP", "WMB", "TRV", "CPRT", "IQV", "PAYX", "O", "MET", "A", "HES", "DLR", "KMB", "MNST", "OKE", "OXY", "D", "BK", "LHX", "CNC", "DOW", 
-                     "CHTR", "STZ", "URI", "AMP", "ADM", "GIS", "CEG", "AME", "JCI", "CTSH", "SYY", "PRU", "FAST", "LEN", "FTNT", "PCG", "YUM", "KVUE", "OTIS", "ODFL", "GWW", "BIIB", "ALL", "CSGP", "ON", "FIS", "ROK", "EXC", "IT", "PPG", "CMI", "VRSK", "KMI", 
-                     "XEL", "EA", "EL", "COR", "RSG", "CTVA", "HAL", "KDP", "GPN", "VICI", "EXR", "DD", "PWR", "ED", "PEG", "IR", "MLM", "CDW", "GEHC", "VMC", "KR", "MPWR", "EFX", "DVN", "FICO", "MRNA", "RCL", "KHC", "DG", "DLTR", "FANG", "KEYS", "CBRE", "ACGL", 
-                     "HSY", "DFS", "SBAC", "EIX", "XYL", "AVB", "DAL", "WBD", "WST", "WEC", "HPQ", "ANSS", "MTD", "RMD", "AWK", "FTV", "ZBH", "TTWO", "WY", "APTV", "CAH", "LYB", "WTW", "HIG", "TROW", "ULTA", "STT", "FITB", "BR", "GLW", "TSCO", "DTE", "WAB", "CHD", 
-                     "EBAY", "MTB", "PHM", "NVR", "ILMN", "HPE", "STE", "ES", "DOV", "RJF", "ETR", "EQR", "HWM", "MOH", "IFF", "PTC", "BLDR", "FLT", "TDY", "IRM", "EXPE", "ARE", "DRI", "INVH", "BAX", "VTR", "PPL", "GRMN", "GPC", "TRGP", "WAT", "CTRA", "ALGN", 
-                     "FE", "AEE", "NDAQ", "LH", "NTAP", "CBOE", "STLD", "WBA", "EXPD", "CCL", "VRSN", "AKAM", "HBAN", "CNP", "AXON", "COO", "VLTO", "RF", "FSLR", "LVS", "SWKS", "BALL", "ENPH", "CLX", "LUV", "FDS", "HOLX", "NTRS", "HUBB", "PFG", "TYL", "ATO", 
-                     "OMC", "MKC", "ALB", "CMS", "EPAM", "JBL", "BRO", "AVY", "JBHT", "IEX", "J", "CINF", "WDC", "TER", "STX", "EQT", "TXT", "ESS", "SYF", "EG", "MAA", "POOL", "MAS", "CFG", "CE", "DGX", "SNA", "LW", "CF", "SWK", "BG", "BBY", "PKG", "TSN", "PODD", 
-                     "LDOS", "MRO", "DPZ", "WRB", "K", "AMCR", "NDSN", "HST", "UAL", "CAG", "ZBRA", "KIM", "KEY", "RVTY", "LYV", "GEN", "TRMB", "LKQ", "LNT", "IP", "SJM", "VTRS", "IPG", "L", "AES", "TECH", "ROL", "JKHY", "MGM", "KMX", "CRL", "EVRG", "MOS", "TFX", 
-                     "PNR", "TAP", "INCY", "UDR", "NRG", "APA", "WRK", "REG", "PEAK", "QRVO", "ALLE", "NI", "FFIV", "MKTX", "EMN", "GL", "CPT", "CDAY", "HII", "ETSY", "BXP", "PAYC", "CHRW", "CZR", "AOS", "HSIC", "BBWI", "JNPR", "MTCH", "RHI", "AAL", "HRL", 
-                     "UHS", "NWSA", "AIZ", "WYNN", "TPR", "CPB", "BEN", "NCLH", "BWA", "PNW", "GNRC", "IVZ", "CTLT", "FRT", "FMC", "PARA", "FOXA", "XRAY", "CMA", "BIO", "HAS", "WHR", "ZION", "VFC", "RL", "DVA", "MHK", "FOX", "NWS"]
+    stock_symbols = ["GOOGL", "TSLA", "APLS", "PLNT", "CX", "WM", "VMC", "VZ", "VTI", "VB", "U", "TTWO", "TSM", "SE", "CRM", "RMCF", "RBLX", "RIVN", "RIOT", "RIO", "RSG", "PFE", "PARR", "OPK", "NEE", "NFGC", "MARA", "DOCU", "BURL", "SGML", "FIVE", "LYFT", "LANC", 
+                     "JYNT", "JNJ", "XT", "ICE", "PI", "HMC", "GPRO", "GE", "EXAS", "EDR", "DO", "DDOG", "KO", "NET", "CVX", "BN", "SQ", "BLK", "BVS", "AESI", "ANET", "AAL", "ANF", "META", "KNF", "PXD", "BHP", "MTD", "CRSR", "LLY", "V", "JPM", "PG", "HD", "BABA", 
+                     "BAC", "PEP", "NVS", "MCD", "SAP", "TMUS", "TTE", "ABT", "PM", "COP", "TXN", "MS", "SPGI", "HON", "UPS", "RTX", "UL", "CAT", "T", "LMT", "ASR", "FVRR", "PACB", "CSX", "UBER", "AZN", "CVS", "PANW", "UNH", "XOM", "AVGO", "MA", "MRK", "ABBV", 
+                     "WMT", "ACN", "LIN", "AMD", "TMO", "DIS", "IBM", "NKE", "NOW", "BMY", "ELV", "VRTX", "MMC", "RCL", "STEM", "ZTO", "RHP", "SYK", "CI", "CB", "AMT", "SLB", "MU", "BSX", "FI", "MO", "DUK", "CDNS", "NOC", "ITW", "SHW", "GD", "USB", "MMM", "TT", 
+                     "LULU", "F", "LCID", "NIO", "PSA", "YUM", "EA", "CRSP", "SPB", "HOG", "CMI", "KR", "HPE", "MRO", "CLX", "BG", "BALL", "ARE", "PFG", "WBA", "EQT", "TXT", "CF", "OMC", "WAT", "DGX", "HUBB", "RF", "IEX", "AVY", "SWKS", "SNA", "JBHT", "EMR", 
+                     "PYPL", "GLOB", "OC", "YUMC", "PKG", "ALGN", "MAA", "LDOS", "EPAM", "ALB", "LUV", "WRB", "STX", "WDC", "ESS", "K", "LW", "AMCR", "TSN", "SWK", "CAG", "BBY", "DPZ", "POOL", "LNT", "SYF", "CCL", "MAS", "CFG", "APA", "L", "LYV", "HST", "LKQ", 
+                     "CE", "CNQ", "DLB", "AAP", "NDSN", "EVRG", "SJM", "TER", "AES", "MOS", "MGM", "ENPH", "ROL", "ZBRA", "JKHY", "KEY", "NRG", "KMX", "TRMB", "NI", "INCY", "GL", "REG", "TFX", "PNR", "CDAY", "UDR", "GEN", "WRK", "CPT", "CZR", "TDG", "KTOS", 
+                     "HAE", "RLJ", "HII", "TECH", "CRL", "PEAK", "EMN", "ALLE", "AOS", "QRVO", "AIZ", "MKTX", "RHI", "HSIC", "PNW", "UHS", "BXP", "CPB", "MTCH", "FOXA", "PAYC", "BWA", "ETSY", "BBWI", "FMC", "FRT", "BEN", "GNRC", "TPR", "RNR", "CTLT", "IVZ", 
+                     "PARA", "WHR", "BIO", "HAS", "CMA", "NCLH", "VFC", "SEE", "RL", "DVA", "MHK", "ALK", "SEDG", "FOX", "NWS", "RHHBY", "CL", "KMB", "HSY", "GIS", "XEL", "ORAN", "ED", "WEC", "VFS", "SRPT", "AEE", "HRL", "CMS", "KKPNY", "FLO", "PNM", "NEA", 
+                     "NAD", "BTT", "SAFT", "RY", "SONY", "ADP", "ETN", "REGN", "C", "UBS", "ABNB", "FSR", "RACE", "MELI", "FDX", "CMG", "MAR", "SCCO", "INN", "MPC", "SNOW", "MSI", "TGT", "PSX", "APO", "TEAM", "KDP", "HLT", "AEP", "SGEN", "BUD", "SHOP", "PINS", 
+                     "BX", "ECL", "HES", "VLO", "DHI", "ET", "LNG", "STZ", "JD", "GWW", "DLR", "CEG", "EW", "TRV", "STM", "WDS", "D", "NUE", "LVS", "O", "DASH", "AME", "DOW", "ALL", "CVE", "SYY", "ARES", "SPOT", "CSGP", "A", "DD", "DVN", "ON", "FANG", "IR", 
+                     "GOLD", "NTR", "ZS", "WST", "SPLK", "WBD", "MPWR", "CHPT", "EC", "AWK", "GIB", "IX", "GRMN", "TEF", "TSCO", "HUBS", "DFS", "STT", "BR", "FE", "FTS", "MTB", "INVH", "OWL", "GPC", "TRGP", "ES", "SNAP", "IFF", "MKL", "IRM", "WMG", "ATO", 
+                     "JBL", "DECK", "ADT", "DNMR", "TEVA", "TM", "PII", "GOEV", "STLA", "GM", "NVO", "SNY", "HLN", "GSK", "RPRX", "ALNY", "CRH", "JHX", "USLM", "EXP", "MLM", "SMID", "SUM", "SND", "NWPX", "COIN", "BYND", "EWBC", "PLTR", "QQQ", "TTD", "NU", 
+                     "SOFI", "AFRM", "APPN", "SWN", "BBD", "CNM", "ACIW", "NEM", "VALE", "GRAB", "HWM", "AXON", "LHX", "HEI", "WWD", "CW", "CAE", "DRS", "ERJ", "MRCY", "ACHR", "CDRE", "SPCE", "PL", "SKYH", "ATRO", "PKE", "KITT", "TATT", "ASTR", "MNTS", "GPS" 
+                     "AAPL", "MSFT", "AMZN", "NVDA", "GOOG", "COST", "ADBE", "NFLX", "CSCO", "INTC", "WFC", "CMCSA", "INTU", "ORCL", "QCOM", "DHR", "BA", "AMGN", "UNP", "AMAT", "LOW", "GS", "BKNG", "PLD", "ISRG", "SBUX", "MDT", "AXP", "DE", "TJX", "SCHW", 
+                     "LRCX", "GILD", "ADI", "MDLZ", "PGR", "ZTS", "SNPS", "KLAC", "SO", "CME", "EQIX", "EOG", "BDX", "MCO", "PNC", "APD", "MCK", "FCX", "AON", "APH", "PH", "NXPI", "ROP", "ORLY", "HUM", "HCA", "NSC", "ADSK", "PCAR", "CCI", "WELL", "COF", "MCHP", 
+                     "CTAS", "TFC", "AJG", "SPG", "CARR", "AIG", "SRE", "AZO", "ROST", "DXCM", "IDXX", "TEL", "AFL", "MSCI", "WMB", "CPRT", "IQV", "PAYX", "MET", "MNST", "OKE", "OXY", "BK", "CNC", "CHTR", "URI", "AMP", "ADM", "JCI", "CTSH", "PRU", "FAST", "LEN", 
+                     "FTNT", "PCG", "KVUE", "OTIS", "ODFL", "BIIB", "FIS", "ROK", "EXC", "IT", "PPG", "VRSK", "KMI", "EL", "COR", "CTVA", "HAL", "GPN", "VICI", "EXR", "PWR", "PEG", "CDW", "GEHC", "EFX", "FICO", "MRNA", "KHC", "DG", "DLTR", "KEYS", "CBRE", "ACGL", 
+                     "SBAC", "EIX", "XYL", "AVB", "DAL", "HPQ", "ANSS", "RMD", "FTV", "ZBH", "WY", "APTV", "CAH", "LYB", "WTW", "HIG", "TROW", "ULTA", "FITB", "GLW", "DTE", "WAB", "CHD", "EBAY", "PHM", "NVR", "ILMN", "STE", "DOV", "RJF", "ETR", "EQR", "MOH", 
+                     "PTC", "BLDR", "FLT", "TDY", "EXPE", "DRI", "BAX", "VTR", "PPL", "CTRA", "NDAQ", "LH", "NTAP", "CBOE", "STLD", "EXPD", "VRSN", "AKAM", "HBAN", "CNP", "COO", "VLTO", "FSLR", "FDS", "HOLX", "NTRS", "TYL", "MKC", "BRO", "J", "CINF", "EG", "PODD", 
+                     "UAL", "KIM", "RVTY", "IP", "VTRS", "IPG", "TAP", "FFIV", "CHRW", "JNPR", "NWSA", "WYNN", "XRAY", "ZION", "NWS" 
+                    ]
+    
 
     current_date = datetime.datetime.now().strftime("%Y-%m-%d")
     current_datetime = datetime.datetime.strptime(current_date, "%Y-%m-%d")
@@ -182,14 +186,17 @@ if __name__ == "__main__":
 
         if not stock_data.empty and len(stock_data) > 0:
             stock_data = calculate_technical_indicators(stock_data)
-            stock_data = calculate_buy_signals(stock_data, start_date, end_date)
+            stock_data = calculate_buy_signals(stock_data)  # No need to pass start_date and end_date here
             buy_signals_within_range = check_buy_signals_within_range(stock_data, start_date, end_date)
             promising_stocks = check_stock_analysis(stock_data, stock_symbol, buy_signals_within_range, stock_messages)
 
     if stock_messages:
         send_email(stock_messages)
-
-    print('Stock Screening Complete; Email Sent')
+        print('Buy Signals Detected. Email Sent')
+    else:
+        print('No Buy Signals Found; No Email Sent')
+        if is_weekend():
+            print("It's the weekend. Market might be closed.")
 
 
 
