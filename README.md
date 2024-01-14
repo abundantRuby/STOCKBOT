@@ -6,6 +6,7 @@ This program uses advanced algorithms and technical indicators to provide stock 
 
 - [Buy Signals](#buy-signals)
 - [Sell Signals](#sell-signals)
+- [BONUS: Individual Screener](#individual-screener)
 
 ## Buy Signals
 
@@ -26,4 +27,14 @@ SellSignals.py Overview:
 - Daily Sell Signal Emails
 
 SellSignals.py complements STOCKBOT by providing sell signals based on advanced technical indicators. Leveraging the power of algorithms and key indicators such as moving averages, RSI, and stochastic oscillators, this script identifies perfect moments to exit a stock position. Seamlessly integrated into your trading strategy, SellSignals.py ensures you stay ahead in the dynamic stock market landscape.
+
+## Individual Screener
+
+Individual-Screener.py Overview:
+
+The Individual Screener is designed for in-depth analysis of individual stocks. It utilizes various technical indicators to provide insights into potential buy and sell signals, and displays all data on a visual graph.
+
+![Stock Analysis](https://i.ibb.co/4WwdH2K/plnt.png)
+
+
 
