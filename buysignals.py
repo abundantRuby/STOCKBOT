@@ -198,5 +198,7 @@ if __name__ == "__main__":
         if is_weekend():
             print("It's the weekend. Market might be closed.")
 
+#STOCKBOT. Made by Dylan Hoag
+
 
 
