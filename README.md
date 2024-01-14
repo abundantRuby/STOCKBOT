@@ -1,21 +1,13 @@
 # STOCKBOT
 
-Basically an underpaid assistant that tells you what stocks to buy and sell.
+This program uses advanced algorithms and technical indicators to provide stock insights, which is useful in allowing users to make informed investment decisions. 
 
-## Table of Contents
+## Main Programs
 
-- [Introduction](#introduction)
 - [Buy Signals](#buy-signals)
 - [Sell Signals](#sell-signals)
-- [Usage](#usage)
-- [Contributing](#contributing)
-- [License](#license)
 
-## Introduction
-
-Provide a brief overview of what your project does and why it's useful.
-
-## Features
+## Buy Signals
 
 List key features of your project.
 
@@ -23,6 +15,6 @@ List key features of your project.
 - Feature 2
 - ...
 
-## Getting Started
+## Sell Signals
 
 
