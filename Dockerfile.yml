@@ -19,3 +19,5 @@ ENV NAME World
 # Run buysignals.py when the container launches
 CMD ["python", "buysignals.py"]
 
+#STOCKBOT. Made by Dylan Hoag
+
