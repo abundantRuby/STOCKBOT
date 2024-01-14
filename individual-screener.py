@@ -27,7 +27,7 @@ def calculate_technical_indicators(stock_data):
     return stock_data
 
 def calculate_beta(end_date, start_date, stock_symbol):
-    benchmark = '^GSPC'  # S&P 500
+    benchmark = '^GSPC'  # S&P 500 benchmark
     stock_data = yf.download([stock_symbol, benchmark], start=start_date, end=end_date)['Adj Close']
     returns = stock_data.pct_change().dropna()
 
@@ -86,7 +86,6 @@ def calculate_sell_signals(stock_data):
         else:
             sell_signal.append(None)
 
-    # None aligns data point to data frame
     sell_signal = [None] + sell_signal
 
     stock_data['Sell_Signal'] = sell_signal
@@ -98,7 +97,6 @@ def calculate_volatility(stock_data):
     return volatility
 
 def plot_stock_analysis(stock_data, stock_symbol):
-    # Set dark mode style
     plt.style.use('dark_background')
 
     fig = plt.figure(figsize=(12, 10))
