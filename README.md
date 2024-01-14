@@ -41,6 +41,7 @@ messages = [
     f"{stock_symbol} is on the rollercoaster of success 🎢",
     f"{stock_symbol} is taking the market by storm 🌪️"
 ]
+```
 
 ## Sell Signals
 
