@@ -6,9 +6,7 @@ Basically an underpaid assistant that tells you what stocks to buy and sell.
 
 - [Introduction](#introduction)
 - [Buy Signals](#buy-signals)
-- [Sell Signals](#getting-started)
-  - [Prerequisites](#prerequisites)
-  - [Installation](#installation)
+- [Sell Signals](#sell-signals)
 - [Usage](#usage)
 - [Contributing](#contributing)
 - [License](#license)
@@ -27,18 +25,4 @@ List key features of your project.
 
 ## Getting Started
 
-### Prerequisites
 
-Specify any prerequisites or dependencies needed to run your project.
-
-- Prerequisite 1
-- Prerequisite 2
-- ...
-
-### Installation
-
-Provide step-by-step instructions on how to install and set up your project.
-
-```bash
-# Example installation command
-npm install my-project
