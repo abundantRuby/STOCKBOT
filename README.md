@@ -1,6 +1,8 @@
 # STOCKBOT
 
-This program uses advanced algorithms and technical indicators to provide stock insights, which is useful in allowing users to make informed investment decisions. 
+Made by Dylan Hoag
+Text (208)-989-8541
+Email dysco712@gmail.com
 
 ## Main Programs
 
