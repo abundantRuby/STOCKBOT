@@ -45,6 +45,8 @@ jobs:
       - name: Run buysignals.py
         run: python buysignals.py
 
+#STOCKBOT. Made by Dylan Hoag
+
 
 
 
