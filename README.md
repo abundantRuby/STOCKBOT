@@ -10,7 +10,8 @@ Contact me with your comments ☺
 
 - [Buy Signals](#buy-signals)
 - [Sell Signals](#sell-signals)
-- [BONUS: Individual Screener](#individual-screener)
+- [Individual Screener](#individual-screener)
+- [Libraries](#libraries)
 
 
 ## Buy Signals
@@ -114,5 +115,14 @@ Example 1: PLNT (Planet Fitness)
 Example 2: APLS (Apellis Pharma)
 ![Stock Analysis](https://i.ibb.co/KLPg18K/apls.png)
 
+## Libraries
+STOCKBOT is built with the following libraries:
+
+- [yfinance](https://pypi.org/project/yfinance/): Fetches financial data from Yahoo Finance.
+- [pandas](https://pandas.pydata.org/): Data manipulation and analysis.
+- [TA-lib](https://ta-lib.org/): Technical analysis of financial markets.
+- [numpy](https://numpy.org/): Scientific computing with Python.
+- [smtplib](https://docs.python.org/3/library/smtplib.html): Sending emails using the Simple Mail Transfer Protocol.
+- [datetime](https://docs.python.org/3/library/datetime.html): Allows for manipulating dates and times.
 
 
