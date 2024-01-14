@@ -47,9 +47,9 @@ To send the emails, STOCKBOT securely connects to the Gmail SMTP server by utili
 
 ```python
 def send_email(stock_messages):
-    sender_email = "iamdylanhoag@gmail.com"  # Replace with your email
-    receiver_email = "dysco712@gmail.com"  # Replace with recipient's email
-    password = "hwys aypg refe luea"  # Replace with your email password
+    sender_email = "sender@gmail.com"  # Replace with your email
+    receiver_email = "recipent@gmail.com"  # Replace with recipient's email
+    password = "xxxx xxxx xxxx xxxx"  # Replace with your remote access code
 
     current_datetime = datetime.datetime.now()
     day_of_week = current_datetime.strftime("%A")
