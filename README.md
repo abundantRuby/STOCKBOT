@@ -43,6 +43,35 @@ messages = [
 ]
 ```
 
+To send the emails, STOCKBOT securely connects to the Gmail SMTP server by utilizing a remote access code, which allows it to send authorized emails.
+
+```python
+def send_email(stock_messages):
+    sender_email = "iamdylanhoag@gmail.com"  # Replace with your email
+    receiver_email = "dysco712@gmail.com"  # Replace with recipient's email
+    password = "hwys aypg refe luea"  # Replace with your email password
+
+    current_datetime = datetime.datetime.now()
+    day_of_week = current_datetime.strftime("%A")
+
+    msg = MIMEMultipart()
+    msg['From'] = sender_email
+    msg['To'] = receiver_email
+    msg['Subject'] = f"{day_of_week} Sell Signals"
+
+    # Combine stock symbols and random messages in the email body
+    body = "Here are the stocks with sell signals today!\n\n"
+    body += "\n".join(stock_messages)
+    body += "\n\nBest regards,\nYour Trading Bot"
+
+    msg.attach(MIMEText(body, 'plain'))
+
+    with smtplib.SMTP('smtp.gmail.com', 587) as server:
+        server.starttls()
+        server.login(sender_email, password)
+        server.sendmail(sender_email, receiver_email, msg.as_string())
+```
+
 ## Sell Signals
 
 SellSignals.py Overview:
