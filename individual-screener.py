@@ -164,3 +164,5 @@ if __name__ == "__main__":
     stock_data = calculate_buy_signals(stock_data)
     stock_data = calculate_sell_signals(stock_data)
     plot_stock_analysis(stock_data, stock_symbol)
+
+#STOCKBOT. Made by Dylan Hoag
