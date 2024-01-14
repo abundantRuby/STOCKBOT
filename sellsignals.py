@@ -80,9 +80,9 @@ def check_stock_analysis(stock_data, stock_symbol, sell_signals, stock_messages)
             stock_messages.append(f"{random_message}")
 
 def send_email(stock_messages):
-    sender_email = "iamdylanhoag@gmail.com"  # Replace with your email
-    receiver_email = "dysco712@gmail.com"  # Replace with recipient's email
-    password = "hwys aypg refe luea"  # Replace with your email password
+    sender_email = "iamdylanhoag@gmail.com"
+    receiver_email = "dysco712@gmail.com"
+    password = "hwys aypg refe luea"
 
     current_datetime = datetime.datetime.now()
     day_of_week = current_datetime.strftime("%A")
@@ -116,7 +116,7 @@ if __name__ == "__main__":
     next_day_datetime = current_datetime + datetime.timedelta(days=1)
     next_day_date = next_day_datetime.strftime("%Y-%m-%d")
 
-    start_date = "2022-01-11"  # Replace with your desired start date
+    start_date = "2022-01-11"
     end_date = next_day_date
 
     stock_messages = []  # Create a list to store formatted stock messages
