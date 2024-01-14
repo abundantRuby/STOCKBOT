@@ -19,7 +19,7 @@ BuySignals.py Overview:
 - Buy Signal Generation
 - Daily Buy Signal Emails
 
-BuySignals.py is the engine driving the buy signals behind STOCKBOT. Using cutting-edge technical analysis and external libraries such as [TA-lib](https://ta-lib.org/), this script analyzes stock data, pinpointing optimal entry points through a combination of moving averages, RSI, and stochastic oscillators. Once a list of stocks has been generated, an email is sent to the user with a unique message for each stock.
+BuySignals.py is the engine driving the buy signals behind STOCKBOT. Using cutting-edge technical analysis and external libraries such as [TA-lib](https://ta-lib.org/), this script analyzes stock data, pinpointing optimal entry points through a combination of moving averages, RSI, and stochastic oscillators. Once a list of stocks has been generated, an email is sent to the user with a randomly-selected message for each stock.
 
 ```python
 messages = [
