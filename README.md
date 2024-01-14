@@ -6,7 +6,7 @@ Made by Dylan Hoag
 
 Contact me with your comments ☺
 
-## Main Programs
+## Index
 
 - [Buy Signals](#buy-signals)
 - [Sell Signals](#sell-signals)
