@@ -8,6 +8,7 @@ This program uses advanced algorithms and technical indicators to provide stock 
 - [Sell Signals](#sell-signals)
 - [BONUS: Individual Screener](#individual-screener)
 
+
 ## Buy Signals
 
 BuySignals.py Overview:
@@ -18,6 +19,7 @@ BuySignals.py Overview:
 
 BuySignals.py is the engine driving the buy signals behind STOCKBOT. Harnessing the power of cutting-edge technical analysis and external libraries such as [TA-lib](https://ta-lib.org/), this script analyzes stock data, pinpointing optimal entry points through a combination of moving averages, RSI, and stochastic oscillators. Seamlessly integrated into your trading strategy, BuySignals.py provides actionable insights and informed investment decisions.
 
+
 ## Sell Signals
 
 SellSignals.py Overview:
@@ -27,6 +29,7 @@ SellSignals.py Overview:
 - Daily Sell Signal Emails
 
 SellSignals.py complements STOCKBOT by providing sell signals based on advanced technical indicators. Leveraging the power of algorithms and key indicators such as moving averages, RSI, and stochastic oscillators, this script identifies perfect moments to exit a stock position. Seamlessly integrated into your trading strategy, SellSignals.py ensures you stay ahead in the dynamic stock market landscape.
+
 
 ## Individual Screener
 
