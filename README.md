@@ -1,6 +1,6 @@
-# Project Name
+# STOCKBOT
 
-Brief description or tagline for your project.
+Basically an underpaid assistant that tells you what stocks to buy and sell.
 
 ## Table of Contents
 
