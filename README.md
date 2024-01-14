@@ -2,7 +2,7 @@
 
 Made by Dylan Hoag
 - **Text:** (208)-989-8541
-- **Email:** dysco712@gmail.com  
+- **Email:** dysco712@gmail.com
 Contact me with your comments ☺
 
 ## Main Programs
