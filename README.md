@@ -1,8 +1,8 @@
 # STOCKBOT
 
-Made by Dylan Hoag  
-Text (208)-989-8541  
-Email dysco712@gmail.com  
+Made by Dylan Hoag
+- **Text:** (208)-989-8541
+- **Email:** dysco712@gmail.com
 
 ## Main Programs
 
@@ -15,12 +15,32 @@ Email dysco712@gmail.com
 
 BuySignals.py Overview:
 
-- Technical Analysis of over 900 stocks
+- Technical Analysis of over 600 stocks (including the S&P 500)
 - Buy Signal Generation
 - Daily Buy Signal Emails
 
-BuySignals.py is the engine driving the buy signals behind STOCKBOT. Harnessing the power of cutting-edge technical analysis and external libraries such as [TA-lib](https://ta-lib.org/), this script analyzes stock data, pinpointing optimal entry points through a combination of moving averages, RSI, and stochastic oscillators. Seamlessly integrated into your trading strategy, BuySignals.py provides actionable insights and informed investment decisions.
+BuySignals.py is the engine driving the buy signals behind STOCKBOT. Using cutting-edge technical analysis and external libraries such as [TA-lib](https://ta-lib.org/), this script analyzes stock data, pinpointing optimal entry points through a combination of moving averages, RSI, and stochastic oscillators. Once a list of stocks has been generated, an email is sent to the user with a unique message for each stock.
 
+```python
+messages = [
+    f"{stock_symbol} is looking goated 🐐",
+    f"{stock_symbol} is on fire 🔥",
+    f"{stock_symbol} will make some money 💸",
+    f"{stock_symbol} is looking bullish 🐂",
+    f"{stock_symbol} is surfing the market waves 🌊",
+    f"{stock_symbol} is taking off 🚀",
+    f"{stock_symbol} is singing a profitable tune 🎶",
+    f"{stock_symbol} is dancing with the bulls 💃",
+    f"{stock_symbol} is turning heads on Wall Street 👀",
+    f"{stock_symbol} is playing the market game like a pro 🎮",
+    f"{stock_symbol} is painting the charts green 🖌️💚",
+    f"{stock_symbol} is a rising star ✨",
+    f"{stock_symbol} is riding the momentum like a boss 🏄‍♂️",
+    f"{stock_symbol} is the hidden gem 💎",
+    f"{stock_symbol} is painting profits 🎨",
+    f"{stock_symbol} is on the rollercoaster of success 🎢",
+    f"{stock_symbol} is taking the market by storm 🌪️"
+]
 
 ## Sell Signals
 
