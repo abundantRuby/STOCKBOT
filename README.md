@@ -80,7 +80,25 @@ SellSignals.py Overview:
 - Sell Signal Generation
 - Daily Sell Signal Emails
 
-SellSignals.py complements STOCKBOT by providing sell signals based on advanced technical indicators. Leveraging the power of algorithms and key indicators such as moving averages, RSI, and stochastic oscillators, this script identifies perfect moments to exit a stock position. Seamlessly integrated into your trading strategy, SellSignals.py ensures you stay ahead in the dynamic stock market landscape.
+SellSignals.py complements STOCKBOT by providing sell signals based on advanced technical indicators. Leveraging the power of algorithms and key indicators such as moving averages, RSI, and stochastic oscillators, this script identifies perfect moments to exit a stock position. Similar to BuySignals.py, emails with custom messages are sent out for your sell signals as well.
+
+```python
+messages = [
+    f"{stock_symbol} is showing sell signals 📉",
+    f"{stock_symbol} might be showing an exit opportunity 🚪",
+    f"{stock_symbol} is signaling a potential downturn ⬇️",
+    f"{stock_symbol} is waving a red flag 🚩",
+    f"{stock_symbol} is displaying sell indicators ⚠️",
+    f"{stock_symbol} is on a sell trajectory 🔻",
+    f"{stock_symbol} is on the sellers' radar 🚨",
+    f"{stock_symbol} is in a bearish route 🐻",
+    f"{stock_symbol} is suggesting a sell opportunity 📉",
+    f"{stock_symbol} is signaling a bearish trend 🐾",
+    f"{stock_symbol} is in the sell zone 📊",
+    f"{stock_symbol} is on the sellers' watchlist 🚨",
+]
+```
+The same email function is used to dispatch emails for SellSignals.py
 
 
 ## Individual Screener
