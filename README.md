@@ -5,8 +5,8 @@ Basically an underpaid assistant that tells you what stocks to buy and sell.
 ## Table of Contents
 
 - [Introduction](#introduction)
-- [Features](#features)
-- [Getting Started](#getting-started)
+- [Buy Signals](#buy-signals)
+- [Sell Signals](#getting-started)
   - [Prerequisites](#prerequisites)
   - [Installation](#installation)
 - [Usage](#usage)
