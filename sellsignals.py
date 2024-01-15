@@ -1,141 +1,147 @@
 import yfinance as yf
 import pandas as pd
-import talib
-import numpy as np
+from datetime import datetime, timedelta
 import smtplib
 from email.mime.text import MIMEText
-from email.mime.multipart import MIMEMultipart
-import datetime
+import random
 
-print('Stock Screening for Sell Signals Started')
+print('Sell Signal Screening Started')
 
-def download_stock_data(stock_symbol, start_date, end_date):
-    try:
-        stock_data = yf.download(stock_symbol, start=start_date, end=end_date, progress=False)
-        if stock_data.empty:
-            raise ValueError(f"No data found for {stock_symbol} between {start_date} and {end_date}")
-        return stock_data
-    except Exception as e:
-        print(f"Error downloading data for {stock_symbol}: {e}")
-        return pd.DataFrame()
+def download_stock_data(symbol, start_date, end_date):
+    stock_data = yf.download(symbol, start=start_date, end=end_date, progress=False)
+    return stock_data
+
+def generate_sell_signals(stock_data):
+    sell_signals = []
+
+    for i in range(len(stock_data)):
+        if (
+            (
+                stock_data['SMA_50'].iloc[i] < stock_data['SMA_200'].iloc[i] and
+                stock_data['RSI'].iloc[i] > 73 and
+                stock_data['Close'].iloc[i] < stock_data['Resistance_Level'].iloc[i] and
+                stock_data['%K'].iloc[i] < stock_data['%D'].iloc[i] and
+                stock_data['%K'].iloc[i] > 73
+            ) or (
+                stock_data['RSI'].iloc[i] > 76 and
+                stock_data['SMA_50'].iloc[i] > stock_data['SMA_200'].iloc[i] and
+                stock_data['%K'].iloc[i] > 76
+            ) or (
+                stock_data['RSI'].iloc[i] > 82
+            )
+        ):
+            sell_signals.append(i)
+
+    return sell_signals
 
 def calculate_technical_indicators(stock_data):
+    # Calculate Simple Moving Averages (SMA_50, SMA_200)
     stock_data['SMA_50'] = stock_data['Close'].rolling(window=50).mean()
     stock_data['SMA_200'] = stock_data['Close'].rolling(window=200).mean()
 
-    rsi_period = 14
-    stock_data['RSI'] = talib.RSI(stock_data['Close'], timeperiod=rsi_period)
+    # Calculate Relative Strength Index (RSI)
+    delta = stock_data['Close'].diff(1)
+    gain = delta.where(delta > 0, 0)
+    loss = -delta.where(delta < 0, 0)
 
-    stock_data['Support_Level'] = stock_data['Low'].rolling(window=50).min()
-    stock_data['Resistance_Level'] = stock_data['High'].rolling(window=50).max()
+    avg_gain = gain.rolling(window=14).mean()
+    avg_loss = loss.rolling(window=14).mean()
 
-    # Calculate the Stochastic Oscillator
-    stoch_period = 14
-    stock_data['%K'] = 100 * ((stock_data['Close'] - stock_data['Low'].rolling(window=stoch_period).min()) /
-                              (stock_data['High'].rolling(window=stoch_period).max() -
-                               stock_data['Low'].rolling(window=stoch_period).min()))
+    rs = avg_gain / avg_loss
+    stock_data['RSI'] = 100 - (100 / (1 + rs))
 
+    # Calculate Support and Resistance Levels (for illustration purposes)
+    stock_data['Support_Level'] = stock_data['Low'].rolling(window=30).min()
+    stock_data['Resistance_Level'] = stock_data['High'].rolling(window=30).max()
+
+    # Calculate Stochastic Oscillator (%K, %D)
+    stock_data['%K'] = ((stock_data['Close'] - stock_data['Low'].rolling(window=14).min()) /
+                        (stock_data['High'].rolling(window=14).max() - stock_data['Low'].rolling(window=14).min())) * 100
     stock_data['%D'] = stock_data['%K'].rolling(window=3).mean()
 
     return stock_data
 
-def check_sell_signals(stock_data):
-    sell_signals = (
-        (stock_data['SMA_50'] < stock_data['SMA_200']) &
-        (stock_data['RSI'] > 68) &
-        (stock_data['Close'] < stock_data['Resistance_Level']) &
-        (stock_data['%K'] < stock_data['%D']) &
-        (stock_data['%K'] > 68)
-    ) | (
-        (stock_data['RSI'] > 75) &
-        (stock_data['SMA_50'] > stock_data['SMA_200']) &
-        (stock_data['%K'] > 75)  # other conditions
-    ) | (
-        (stock_data['RSI'] > 82)
-    )
+def check_sell_signals(stocks, start_date, end_date):
+    sell_list = []
 
-    stock_data['Sell_Signal'] = np.where(sell_signals, stock_data['Close'], None)
+    for stock_symbol in stocks:
+        stock_data = download_stock_data(stock_symbol, start_date, end_date)
+        stock_data = calculate_technical_indicators(stock_data)
+        sell_signals = generate_sell_signals(stock_data)
 
-    return stock_data
+        if sell_signals:
+            # Check if there was a sell signal in the past day
+            last_sell_signal_date = stock_data.index[sell_signals[-1]]
+            today = datetime.now().date()
+            if (today - last_sell_signal_date.date()).days <= 2:
+                sell_list.append((stock_symbol, get_random_message()))
 
-def check_stock_analysis(stock_data, stock_symbol, sell_signals, stock_messages):
-    if not stock_data.empty and len(stock_data) > 0:
-        last_row = stock_data.iloc[-1]
-        if sell_signals.iloc[-1]:
-            messages = [
-                f"{stock_symbol} is showing sell signals 📉",
-                f"{stock_symbol} might be showing an exit opportunity 🚪",
-                f"{stock_symbol} is signaling a potential downturn ⬇️",
-                f"{stock_symbol} is waving a red flag 🚩",
-                f"{stock_symbol} is displaying sell indicators ⚠️",
-                f"{stock_symbol} is on a sell trajectory 🔻",
-                f"{stock_symbol} is on the sellers' radar 🚨",
-                f"{stock_symbol} is in a bearish route 🐻",
-                f"{stock_symbol} is suggesting a sell opportunity 📉",
-                f"{stock_symbol} is signaling a bearish trend 🐾",
-                f"{stock_symbol} is in the sell zone 📊",
-                f"{stock_symbol} is on the sellers' watchlist 🚨",
-            ]
-            random_message = np.random.choice(messages)
-            stock_messages.append(f"{random_message}")
+    return sell_list
 
-def send_email(stock_messages):
-    sender_email = "iamdylanhoag@gmail.com"
-    receiver_email = "dysco712@gmail.com"
-    password = "hwys aypg refe luea"
+def get_random_message():
+    messages = [
+        "is showing sell signals 📉",
+        "might be showing an exit opportunity 🚪",
+        "is signaling a potential downturn ⬇️",
+        "is waving a red flag 🚩",
+        "is displaying sell indicators ⚠️",
+        "is on a sell trajectory 🔻",
+        "is on the sellers' radar 🚨",
+        "is in a bearish route 🐻",
+        "is suggesting a sell opportunity 📉",
+        "is signaling a bearish trend 🐾",
+        "is in the sell zone 📊",
+        "is on the sellers' watchlist 🚨"
+    ]
+    return random.choice(messages)
 
-    current_datetime = datetime.datetime.now()
-    day_of_week = current_datetime.strftime("%A")
+def send_email(sell_list):
+    # Replace 'your_email@gmail.com' and 'your_password' with your Gmail credentials
+    from_email = 'iamdylanhoag@gmail.com'
+    password = 'hwys aypg refe luea'
 
-    msg = MIMEMultipart()
-    msg['From'] = sender_email
-    msg['To'] = receiver_email
-    msg['Subject'] = f"{day_of_week} Sell Signals"
+    current_date = datetime.now()
+    current_day_name = current_date.strftime('%A')
 
-    # Combine stock symbols and random messages in the email body
-    body = "Here are the stocks with sell signals today!\n\n"
-    body += "\n".join(stock_messages)
-    body += "\n\nBest regards,\nYour Trading Bot"
+    subject = f'{current_day_name} Sell Signals!'
+    body = f"Here are stocks with a sell signal in the past day:\n\n"
+    
+    for stock_symbol, message in sell_list:
+        body += f"{stock_symbol} {message}\n"
 
-    msg.attach(MIMEText(body, 'plain'))
+    body += "\nBest regards,\nYour Trading Bot"
 
-    with smtplib.SMTP('smtp.gmail.com', 587) as server:
-        server.starttls()
-        server.login(sender_email, password)
-        server.sendmail(sender_email, receiver_email, msg.as_string())
+    to_email = 'dysco712@gmail.com'  # Replace with the recipient's email address
 
-def is_weekend():
-    today = datetime.date.today()
-    return today.weekday() in [5, 6]  # 5 is Saturday, 6 is Sunday
+    message = MIMEText(body)
+    message['Subject'] = subject
+    message['From'] = from_email
+    message['To'] = to_email
+
+    try:
+        with smtplib.SMTP_SSL('smtp.gmail.com', 465) as server:
+            server.login(from_email, password)
+            server.sendmail(from_email, to_email, message.as_string())
+        print("Email sent successfully!")
+    except Exception as e:
+        print(f"Failed to send email. Error: {e}")
+
+def main():
+    # Customize the list of stock symbols
+    stock_symbols = ["DAL", "RIVN", "BWA", "ENPH", "F", "ALLY", "ON", "BROS", "O", "IRBO", "HLN", "PAVE", "PLNT", "NEE", "GSK", "GOLD", "HUM", "AON", "YUMC", "RIO", "BMY", "FLO", "SJM"]
+
+    start_date = datetime(2022, 1, 1)
+    end_date = datetime.now()
+
+    sell_list = check_sell_signals(stock_symbols, start_date, end_date)
+
+    if sell_list:
+        send_email(sell_list)
+    else:
+        print("No stocks with sell signals in the past day.")
 
 if __name__ == "__main__":
-    stock_symbols = ["DAL", "RIVN", "BWA", "ENPH", "F", "ALLY", "ON", "BROS", "O", "IRBO", "HLN", "PAVE", "PLNT", "NEE", "GSK", "GOLD", "HUM", "AON", "YUMC", "RIO", "BMY", "FLO", "SJM"]  # Replace with your stock symbols
-
-    current_date = datetime.datetime.now().strftime("%Y-%m-%d")
-    current_datetime = datetime.datetime.strptime(current_date, "%Y-%m-%d")
-    next_day_datetime = current_datetime + datetime.timedelta(days=1)
-    next_day_date = next_day_datetime.strftime("%Y-%m-%d")
-
-    start_date = "2022-01-11"
-    end_date = next_day_date
-
-    stock_messages = []  # Create a list to store formatted stock messages
-
-    for stock_symbol in stock_symbols:
-        stock_data = download_stock_data(stock_symbol, start_date, end_date)
-
-        if not stock_data.empty and len(stock_data) > 0:
-            stock_data = calculate_technical_indicators(stock_data)
-            stock_data = check_sell_signals(stock_data)
-            check_stock_analysis(stock_data, stock_symbol, stock_data['Sell_Signal'].notnull(), stock_messages)
-
-    if stock_messages:
-        send_email(stock_messages)
-        print('Sell Signals Detected. Email Sent')
-    else:
-        print('No Sell Signals Found; No Email Sent')
-        if is_weekend():
-            print("It's the weekend. Market might be closed.")
+    main()
 
 #STOCKBOT. Made by Dylan Hoag
 
