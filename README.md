@@ -132,10 +132,17 @@ Example 1: AAPL (Apple)
 ![Stock Analysis](https://i.ibb.co/nCLLvPp/AAPL.png)
 Example 2: WM (Waste Management)
 ![Stock Analysis](https://i.ibb.co/56YZTDj/WM.png)
-Example 2: AMZN (Amazon)
+Example 3: AMZN (Amazon)
 ![Stock Analysis](https://i.ibb.co/TKr81ry/amzn.png)
 
 ## Testing and Data
+
+
+
+
+
+## Other
+
 STOCKBOT is built with the following libraries:
 
 - [yfinance](https://pypi.org/project/yfinance/): Fetches financial data from Yahoo Finance.
@@ -145,7 +152,6 @@ STOCKBOT is built with the following libraries:
 - [smtplib](https://docs.python.org/3/library/smtplib.html): Sending emails using the Simple Mail Transfer Protocol.
 - [datetime](https://docs.python.org/3/library/datetime.html): Allows for manipulating dates and times.
 
-## Other
 Made by Dylan Hoag
 - **Text:** (208)-989-8541
 - **Email:** dysco712@gmail.com
