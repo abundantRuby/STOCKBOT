@@ -21,11 +21,11 @@ Happy reading!
 
 Buysignals.py Overview:
 
-This program is the engine driving the buy signals behind STOCKBOT. Essentially it uses external libraries such as [TA-lib](https://ta-lib.org/) to perform complex technical analysis on stock data. 
+This program is the engine driving the buy signals behind STOCKBOT. This program leverages external libraries such as [TA-lib](https://ta-lib.org/) to perform complex technical analysis on stock data. 
 
-Through a combination of moving averages, RSI, support and resistance levels, and stochastic oscillators, it pinpoints optimal entry points to invest in a stock.
+Using a combination of moving averages, RSI, support and resistance levels, and stochastic oscillators, this program precisely identifies optimal entry points for stock investments.
 
-It performs these calculations for a large list of stocks, and then sends an email to the user with all of the buy signals.
+It performs these calculations across a large list of stocks, and then proceeds to send an email containing all the signals to the user.
 
 To send the emails, STOCKBOT securely connects to the Gmail SMTP server by utilizing a remote access code, which allows it to send authorized emails.
 
@@ -80,9 +80,7 @@ messages = [
 ]
 ```
 
-Additionally, this program is set up on a CRON schedule, so the user gets automated daily emails about buy signals.
-
-If you keep reading, you will learn about individual-screener.py, which was built to visualize the buy and sell signals on a graph, to visually see how buysignals.py works.
+Furthermore, this program operates on a CRON schedule, ensuring that users receive automated daily emails containing the latest buy signals.
 
 ## Sell Signals
 
@@ -90,7 +88,7 @@ SellSignals.py Overview:
 
 This program calculates the sell signals behind STOCKBOT. Leveraging the same technical indicators as buysignals.py, this program identifies optimal points to exit a position in the stock market.
 
-This program also uses the same logic for sending emails, and also includes custom messages:
+This program also uses the same logic for sending emails, and also integrates custom messages:
 
 ```python
 messages = [
