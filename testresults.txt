@@ -1,3 +1,0 @@
-from 44400 data points over 5 years, AVERAGE ROI when using only buy and sell signals for SP500 is 3.89%, and average time between buy and sell is 67 days
-
-From 44400 data points over 5 years, STOCKBOT has a 76% chance of reaching a 10% gain in 12 months on SP500
