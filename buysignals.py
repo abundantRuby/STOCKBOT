@@ -74,7 +74,7 @@ def check_buy_signals(stocks, start_date, end_date):
             # Check if there was a buy signal in the past day
             last_buy_signal_date = stock_data.index[buy_signals[-1]]
             today = datetime.now().date()
-            if (today - last_buy_signal_date.date()).days <= 2:
+            if (today - last_buy_signal_date.date()).days == 1:
                 buy_list.append((stock_symbol, get_random_message()))
 
     return buy_list
