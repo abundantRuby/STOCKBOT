@@ -170,7 +170,7 @@ But for a simplistic estimation based on our data, we can assume investments in 
 - Day 257: With $119.20, reinvest.
 - Day 321: With $124.55. Assume year ends.
 
-In this extremely basic scenario, the gain would be 24.55%. In a more realistic setting, with consistent investments and compounding, and a larger number of buy signals, the actual returns could surpass this figure.
+In this extremely basic scenario, the gain would be 24.55% in 0.88 years. In a more realistic setting, with consistent investments and compounding, and a larger number of buy signals, the actual returns could surpass this figure.
 
 It's important to note that this data and average ROI is generated solely by the bot, without human intervention. If desired, users can apply their own investment logic, including the use of stop prices.
 
