@@ -1,50 +1,31 @@
 # STOCKBOT
 
-Made by Dylan Hoag
-- **Text:** (208)-989-8541
-- **Email:** dysco712@gmail.com
+Hey There 👋
 
-Contact me with your comments ☺
+STOCKBOT is a comprehensive tool developed in python featuring three primary components: Buy Signals, Sell Signals, and the Individual Stock Screener.
 
-## Index
+This repository contains in-depth documentation about STOCKBOT, providing insights into each of the main programs. Additionally, you'll find SP500 backtesting results derived from over 44,400 data points spanning from 2019.
 
-- [Buy Signals](#buy-signals)
-- [Sell Signals](#sell-signals)
-- [Individual Screener](#individual-screener)
-- [Libraries](#libraries)
+Happy reading!
+
+## Guide
+
+- [1: Buy Signals](#buy-signals)
+- [2: Sell Signals](#sell-signals)
+- [3: Individual Screener](#individual-screener)
+- [Testing and Data](#testing-and-data)
+- [Other](#other)
 
 
 ## Buy Signals
 
-BuySignals.py Overview:
+Buysignals.py Overview:
 
-- Technical Analysis of over 600 stocks (including the S&P 500)
-- Buy Signal Generation
-- Daily Buy Signal Emails
+This program is the engine driving the buy signals behind STOCKBOT. Essentially it uses external libraries such as [TA-lib](https://ta-lib.org/) to perform complex technical analysis on stock data. 
 
-BuySignals.py is the engine driving the buy signals behind STOCKBOT. Using cutting-edge technical analysis and external libraries such as [TA-lib](https://ta-lib.org/), this script analyzes stock data, pinpointing optimal entry points through a combination of moving averages, RSI, and stochastic oscillators. Once a list of stocks has been generated, an email is sent to the user with a randomly-selected message for each stock.
+Through a combination of moving averages, RSI, support and resistance levels, and stochastic oscillators, it pinpoints optimal entry points to invest in a stock.
 
-```python
-messages = [
-    f"{stock_symbol} is looking goated 🐐",
-    f"{stock_symbol} is on fire 🔥",
-    f"{stock_symbol} will make some money 💸",
-    f"{stock_symbol} is looking bullish 🐂",
-    f"{stock_symbol} is surfing the market waves 🌊",
-    f"{stock_symbol} is taking off 🚀",
-    f"{stock_symbol} is singing a profitable tune 🎶",
-    f"{stock_symbol} is dancing with the bulls 💃",
-    f"{stock_symbol} is turning heads on Wall Street 👀",
-    f"{stock_symbol} is playing the market game like a pro 🎮",
-    f"{stock_symbol} is painting the charts green 🖌️💚",
-    f"{stock_symbol} is a rising star ✨",
-    f"{stock_symbol} is riding the momentum like a boss 🏄‍♂️",
-    f"{stock_symbol} is the hidden gem 💎",
-    f"{stock_symbol} is painting profits 🎨",
-    f"{stock_symbol} is on the rollercoaster of success 🎢",
-    f"{stock_symbol} is taking the market by storm 🌪️"
-]
-```
+It performs these calculations for a large list of stocks, and then sends an email to the user with all of the buy signals.
 
 To send the emails, STOCKBOT securely connects to the Gmail SMTP server by utilizing a remote access code, which allows it to send authorized emails.
 
@@ -75,15 +56,41 @@ def send_email(stock_messages):
         server.sendmail(sender_email, receiver_email, msg.as_string())
 ```
 
+To make the emails more interesting, a unique message is randomly generated for each stock:
+
+```python
+messages = [
+    f"{stock_symbol} is looking goated 🐐",
+    f"{stock_symbol} is on fire 🔥",
+    f"{stock_symbol} will make some money 💸",
+    f"{stock_symbol} is looking bullish 🐂",
+    f"{stock_symbol} is surfing the market waves 🌊",
+    f"{stock_symbol} is taking off 🚀",
+    f"{stock_symbol} is singing a profitable tune 🎶",
+    f"{stock_symbol} is dancing with the bulls 💃",
+    f"{stock_symbol} is turning heads on Wall Street 👀",
+    f"{stock_symbol} is playing the market game like a pro 🎮",
+    f"{stock_symbol} is painting the charts green 🖌️💚",
+    f"{stock_symbol} is a rising star ✨",
+    f"{stock_symbol} is riding the momentum like a boss 🏄‍♂️",
+    f"{stock_symbol} is the hidden gem 💎",
+    f"{stock_symbol} is painting profits 🎨",
+    f"{stock_symbol} is on the rollercoaster of success 🎢",
+    f"{stock_symbol} is taking the market by storm 🌪️"
+]
+```
+
+Additionally, this program is set up on a CRON schedule, so the user gets automated daily emails about buy signals.
+
+If you keep reading, you will learn about individual-screener.py, which was built to visualize the buy and sell signals on a graph, to visually see how buysignals.py works.
+
 ## Sell Signals
 
 SellSignals.py Overview:
 
-- Technical Analysis on Stocks of Your Choice
-- Sell Signal Generation
-- Daily Sell Signal Emails
+This program calculates the sell signals behind STOCKBOT. Leveraging the same technical indicators as buysignals.py, this program identifies optimal points to exit a position in the stock market.
 
-SellSignals.py complements STOCKBOT by providing sell signals based on advanced technical indicators. Leveraging the power of algorithms and key indicators such as moving averages, RSI, and stochastic oscillators, this script identifies perfect moments to exit a stock position. Similar to BuySignals.py, emails with custom messages are sent out for your sell signals as well.
+This program also uses the same logic for sending emails, and also includes custom messages:
 
 ```python
 messages = [
@@ -101,21 +108,34 @@ messages = [
     f"{stock_symbol} is on the sellers' watchlist 🚨",
 ]
 ```
-The same email function is used to dispatch emails for SellSignals.py
+
+The email structure also is identical for both programs:
+
+![Stock Analysis](https://i.ibb.co/qxHZWRr/Screenshot-2024-01-17-151932.png)
 
 
 ## Individual Screener
 
 Individual-Screener.py Overview:
 
-The Individual Screener is designed for in-depth analysis of individual stocks. It utilizes various technical indicators to provide insights into potential buy and sell signals, and displays all data on a visual graph.
+The Individual Screener is designed for in-depth analysis of individual stocks, and it helps to visualize the buy and sell signals calculated by the two previous programs.
 
-Example 1: PLNT (Planet Fitness)
-![Stock Analysis](https://i.ibb.co/4WwdH2K/plnt.png)
-Example 2: APLS (Apellis Pharma)
-![Stock Analysis](https://i.ibb.co/KLPg18K/apls.png)
+The user can input a start_date, and the bot will pull up a graph of all the calculations and data from your specified time period, and show all the calculated buy and sell signals.
 
-## Libraries
+As you will see below, there are three different graphs.
+
+- Top Graph: Shows the stock price, the moving averages, and the buy signals (green triangle) and sell signals (red triangle)
+- Middle Graph: Shows the other technical indicators, such as RSI, the calculated overbought and oversold levels, and the calculated support and resistance levels
+- Bottom Graph: Shows the stock volume. This doesn't currently have any impact on the program, but it takes up unused space and can explain sudden price changes
+
+Example 1: AAPL (Apple)
+![Stock Analysis](https://i.ibb.co/nCLLvPp/AAPL.png)
+Example 2: WM (Waste Management)
+![Stock Analysis](https://i.ibb.co/56YZTDj/WM.png)
+Example 2: AMZN (Amazon)
+![Stock Analysis](https://i.ibb.co/TKr81ry/amzn.png)
+
+## Testing and Data
 STOCKBOT is built with the following libraries:
 
 - [yfinance](https://pypi.org/project/yfinance/): Fetches financial data from Yahoo Finance.
@@ -125,4 +145,10 @@ STOCKBOT is built with the following libraries:
 - [smtplib](https://docs.python.org/3/library/smtplib.html): Sending emails using the Simple Mail Transfer Protocol.
 - [datetime](https://docs.python.org/3/library/datetime.html): Allows for manipulating dates and times.
 
+## Other
+Made by Dylan Hoag
+- **Text:** (208)-989-8541
+- **Email:** dysco712@gmail.com
+
+Contact me with your comments ☺
 
