@@ -14,7 +14,8 @@ Happy reading!
 - [2: Sell Signals](#sell-signals)
 - [3: Individual Screener](#individual-screener)
 - [Testing and Data](#testing-and-data)
-- [Other](#other)
+- [Other Information](#other-information)
+- [Note](#note)
 
 
 ## Buy Signals
@@ -137,11 +138,43 @@ Example 3: AMZN (Amazon)
 
 ## Testing and Data
 
+To test the accuracy of STOCKBOT, CalcROI.py was built.
 
+This program computes signals, calculates ROI by determining the average percent return per transaction, and provides an overall ROI per stock (and for a list of stocks).
 
+It identifies buy signals and, upon encountering the next available sell signal, computes the ROI for the corresponding transaction(s). For instance:
 
+Here is an example
 
-## Other
+- Buy Signal on July 15
+- Buy Signal on July 19
+- Buy Signal on July 25
+- Sell Signal on July 28 (sell 3x)
+
+In this scenario, all three buy signals were sold on July 28, and the ROI was calculated individually for each of those three transactions.
+
+This program was modified to compute the ROI for an extensive stock list. In my test, I determined the average ROI per transaction for the entire S&P 500 since 2019 (5 years).
+
+This test analysed 44,400 data points (each representing one calculated transaction), and resulted in an average ROI per transaction of 4.49%. The program was also adjusted to calculate the average holding time (from buy to sell), which was found to be 64 days.
+
+So in theory, according to this extensive test data, investing in a buy signal will result in a 4.49% gain when sold at the sell signal (about 64 days later). The more buy signals you invest in, the closer your returns are expected to align with these figures.
+
+Predicting the average yearly ROI from this data is challenging, if not impossible, as it depends on numerous factors such as the number of buy signals invested in, compounding of funds, and how the market is performing.
+
+But for a simplistic estimation based on our data, we can assume investments in 64-day periods:
+
+- Day 1: Invest $100 evenly across x stocks with buy signals.
+- Day 65: With $104.49, reinvest across x stocks.
+- Day 129: With $109.18, repeat the process.
+- Day 193: With $114.08, reinvest.
+- Day 257: With $119.20, reinvest.
+- Day 321: With $124.55. Assume year ends.
+
+In this extremely basic scenario, the gain would be 24.55%. In a more realistic setting, with consistent investments and compounding, and a larger number of buy signals, the actual returns could surpass this figure.
+
+It's important to note that this data and average ROI is generated solely by the bot, without human intervention. If desired, users can apply their own investment logic, including the use of stop prices.
+
+## Other Information
 
 STOCKBOT is built with the following libraries:
 
@@ -151,6 +184,8 @@ STOCKBOT is built with the following libraries:
 - [numpy](https://numpy.org/): Scientific computing with Python.
 - [smtplib](https://docs.python.org/3/library/smtplib.html): Sending emails using the Simple Mail Transfer Protocol.
 - [datetime](https://docs.python.org/3/library/datetime.html): Allows for manipulating dates and times.
+
+## Note
 
 Made by Dylan Hoag
 - **Text:** (208)-989-8541
