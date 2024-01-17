@@ -176,7 +176,7 @@ It's important to note that this data and average ROI is generated solely by the
 
 ## Other Information
 
-STOCKBOT is built with the following libraries:
+STOCKBOT was built in python 3.11.7 with the following libraries:
 
 - [yfinance](https://pypi.org/project/yfinance/): Fetches financial data from Yahoo Finance.
 - [pandas](https://pandas.pydata.org/): Data manipulation and analysis.
@@ -184,6 +184,8 @@ STOCKBOT is built with the following libraries:
 - [numpy](https://numpy.org/): Scientific computing with Python.
 - [smtplib](https://docs.python.org/3/library/smtplib.html): Sending emails using the Simple Mail Transfer Protocol.
 - [datetime](https://docs.python.org/3/library/datetime.html): Allows for manipulating dates and times.
+
+Dependencies and versions are specified in requirements.txt
 
 ## Note
 
