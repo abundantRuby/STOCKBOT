@@ -126,6 +126,8 @@ The screener includes three different graphs:
 - Middle Graph: Illustrates additional technical indicators, including RSI, overbought and oversold levels, as well as support and resistance levels.
 - Bottom Graph: Shows stock volume, which currently has no impact on the bot's decision-making. It simply serves as additional information on unused space.
 
+In these examples, the bot is displaying all data and calculations since 2020.
+
 Example 1: AAPL (Apple)
 ![Stock Analysis](https://i.ibb.co/nCLLvPp/AAPL.png)
 Example 2: WM (Waste Management)
