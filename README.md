@@ -116,15 +116,15 @@ The email structure also is identical for both programs:
 
 Individual-Screener.py Overview:
 
-The Individual Screener is designed for in-depth analysis of individual stocks, and it helps to visualize the buy and sell signals calculated by the two previous programs.
+The Individual Screener is designed for in-depth analysis of individual stocks, and provides a visual representation of the buy and sell signals.
 
-The user can input a start_date, and the bot will pull up a graph of all the calculations and data from your specified time period, and show all the calculated buy and sell signals.
+Users can specify a start_date, prompting the bot to generate a graph encompassing the calculations and data from the designated time period.
 
-As you will see below, there are three different graphs.
+The screener includes three different graphs:
 
-- Top Graph: Shows the stock price, the moving averages, and the buy signals (green triangle) and sell signals (red triangle)
-- Middle Graph: Shows the other technical indicators, such as RSI, the calculated overbought and oversold levels, and the calculated support and resistance levels
-- Bottom Graph: Shows the stock volume. This doesn't currently have any impact on the program, but it takes up unused space and can explain sudden price changes
+- Top Graph: Displays stock price alongside moving averages, depicting buy signals (green triangle) and sell signals (red triangle).
+- Middle Graph: Illustrates additional technical indicators, including RSI, overbought and oversold levels, as well as support and resistance levels.
+- Bottom Graph: Shows stock volume, which currently has no impact on the bot's decision-making. It simply serves as additional information on unused space.
 
 Example 1: AAPL (Apple)
 ![Stock Analysis](https://i.ibb.co/nCLLvPp/AAPL.png)
