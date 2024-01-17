@@ -4,7 +4,7 @@ Hey There 👋
 
 STOCKBOT is a comprehensive tool developed in python featuring three primary components: Buy Signals, Sell Signals, and the Individual Stock Screener.
 
-This repository contains in-depth documentation about STOCKBOT, providing insights into each of the main programs. Additionally, you'll find SP500 backtesting results derived from over 44,400 data points spanning from 2019.
+This repository contains in-depth documentation about STOCKBOT, providing insights into each of the main programs. Additionally, you'll find SP500 backtesting results derived from over 44,400 data points since 2019.
 
 Happy reading!
 
