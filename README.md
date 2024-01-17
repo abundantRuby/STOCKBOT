@@ -189,9 +189,14 @@ Dependencies and versions are specified in requirements.txt
 
 ## Note
 
-Made by Dylan Hoag
-- **Text:** (208)-989-8541
-- **Email:** dysco712@gmail.com
+Your comments or suggestions are extremely appreciated, so please reach out!
 
-Contact me with your comments ☺
+Text 📱: 208-989-8541
+Email 📧: iamdylanhoag@gmail.com
+
+Feel free to pull the code from this repository or ask to get added to the daily email lists!
+
+Stay tuned for future projects and updates!
+
+ - Dylan Hoag 😊
 
