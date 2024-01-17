@@ -142,9 +142,9 @@ To test the accuracy of STOCKBOT, CalcROI.py was built.
 
 This program computes signals, calculates ROI by determining the average percent return per transaction, and provides an overall ROI per stock (and for a list of stocks).
 
-It identifies buy signals and, upon encountering the next available sell signal, computes the ROI for the corresponding transaction(s). For instance:
+It identifies buy signals and, upon encountering the next available sell signal, computes the ROI for the corresponding transaction(s).
 
-Here is an example
+Here is an example:
 
 - Buy Signal on July 15
 - Buy Signal on July 19
