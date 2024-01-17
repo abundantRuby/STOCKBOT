@@ -15,7 +15,7 @@ Happy reading!
 - [3: Individual Screener](#individual-screener)
 - [Testing and Data](#testing-and-data)
 - [Other Information](#other-information)
-- [Note](#note)
+- [Important Note](#important-note)
 
 
 ## Buy Signals
@@ -187,7 +187,7 @@ STOCKBOT was built in python 3.11.7 with the following libraries:
 
 Dependencies and versions are specified in requirements.txt
 
-## Note
+## Important Note
 
 Your comments or suggestions are extremely appreciated, so please reach out!
 
