@@ -166,6 +166,8 @@ stock_symbols_list = ["AAPL", "MSFT", "GOOG", "GOOGL", "AMZN", "NVDA", "META", "
                      "MKTX", "HII", "MTCH", "APA", "DVA", "QRVO", "HSIC", "CZR", "BBWI", "BIO", "RL", "CTLT", "PARA", "AIZ", "AAL", "RHI", "ETSY", "FRT", "TPR", "PNW", "IVZ", "XRAY", "BWA", "GNRC", "FMC", "CMA", "NCLH", "HAS", "MHK", "VFC", "WHR", "ZION"]
 calculate_average_roi_for_stocks(stock_symbols_list)
 
+#STOCKBOT. Made by Dylan Hoag
+
 
 
 
