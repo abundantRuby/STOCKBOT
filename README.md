@@ -198,5 +198,5 @@ Feel free to pull the code from this repository or ask to get added to the daily
 
 Stay tuned for future projects and updates!
 
--Dylan Hoag
+-Dylan Hoag 😊
 
