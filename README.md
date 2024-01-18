@@ -191,7 +191,7 @@ Dependencies and versions are specified in requirements.txt
 
 Your comments or suggestions are extremely appreciated, so please reach out!
 
-Text 📱: 208-989-8541
+Text 📱: 208-989-8541  
 Email 📧: iamdylanhoag@gmail.com
 
 Feel free to pull the code from this repository or ask to get added to the daily email lists!
