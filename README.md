@@ -2,7 +2,7 @@
 
 Hey There 👋
 
-STOCKBOT is a comprehensive tool developed in python featuring three primary components: Buy Signals, Sell Signals, and the Individual Stock Screener.
+STOCKBOT is a comprehensive tool developed in python that features three primary components: Buy Signals, Sell Signals, and the Individual Stock Screener.
 
 This repository contains in-depth documentation about STOCKBOT, providing insights into each of the main programs. Additionally, you'll find SP500 backtesting results derived from over 44,400 data points since 2019.
 
@@ -28,7 +28,7 @@ Using a combination of moving averages, RSI, support and resistance levels, and 
 
 It performs these calculations across a large list of stocks, and then proceeds to send an email containing all the signals to the user.
 
-To send the emails, STOCKBOT securely connects to the Gmail SMTP server by utilizing a remote access code, which allows it to send authorized emails.
+To send the emails, STOCKBOT securely connects to the Gmail SMTP server by using a remote access code, which allows it to send authorized emails.
 
 ```python
 def send_email(stock_messages):
@@ -81,13 +81,13 @@ messages = [
 ]
 ```
 
-Furthermore, this program operates on a CRON schedule, ensuring that users receive automated daily emails containing the latest buy signals.
+Furthermore, this program operates on a CRON schedule, which ensures that users receive automated daily emails containing the latest buy signals.
 
 ## Sell Signals
 
 SellSignals.py Overview:
 
-This program calculates the sell signals behind STOCKBOT. Leveraging the same technical indicators as buysignals.py, this program identifies optimal points to exit a position in the stock market.
+This program calculates the sell signals behind STOCKBOT. Using the same technical indicators as buysignals.py, this program identifies optimal points to exit a holding in the stock market.
 
 This program also uses the same logic for sending emails, and also integrates custom messages:
 
@@ -119,13 +119,13 @@ Individual-Screener.py Overview:
 
 The Individual Screener is designed for in-depth analysis of individual stocks, and provides a visual representation of the buy and sell signals.
 
-Users can specify a start_date, prompting the bot to generate a graph encompassing the calculations and data from the designated time period.
+Users can specify a start_date, which prompts the bot to generate a graph with the calculations and data from the designated time period.
 
 The screener includes three different graphs:
 
-- Top Graph: Displays stock price alongside moving averages, depicting buy signals (green triangle) and sell signals (red triangle).
-- Middle Graph: Illustrates additional technical indicators, including RSI, overbought and oversold levels, as well as support and resistance levels.
-- Bottom Graph: Shows stock volume, which currently has no impact on the bot's decision-making. It simply serves as additional information on unused space.
+- Top Graph: Displays stock price along with moving averages, depicting buy signals (green triangle) and sell signals (red triangle).
+- Middle Graph: Illustrates other technical indicators, including RSI, overbought and oversold levels, and support and resistance levels.
+- Bottom Graph: Shows stock volume, which currently has no impact on the bot's decision-making. It simply serves as more info on unused space.
 
 In these examples, the bot is displaying all data and calculations since 2020.
 
@@ -140,9 +140,9 @@ Example 3: AMZN (Amazon)
 
 To test the accuracy of STOCKBOT, CalcROI.py was built.
 
-This program computes signals, calculates ROI by determining the average percent return per transaction, and provides an overall ROI per stock (and for a list of stocks).
+This program calculates ROI by determining the average percent return per transaction, and provides an overall ROI per stock (and for a list of stocks).
 
-It identifies buy signals and, upon encountering the next available sell signal, computes the ROI for the corresponding transaction(s).
+It identifies buy signals, and when it encounters the next available sell signal, it computes the ROI for those transaction(s).
 
 Here is an example:
 
@@ -153,15 +153,15 @@ Here is an example:
 
 In this scenario, all three buy signals were sold on July 28, and the ROI was calculated individually for each of those three transactions.
 
-This program was modified to compute the ROI for an extensive stock list. In my test, I determined the average ROI per transaction for the entire S&P 500 since 2019 (5 years).
+This program was modified to compute the ROI for a long stock list. In my test, I determined the average ROI per transaction for the entire S&P 500 since 2019 (over 5 years of data).
 
 This test analysed 44,400 data points (each representing one calculated transaction), and resulted in an average ROI per transaction of 4.49%. The program was also adjusted to calculate the average holding time (from buy to sell), which was found to be 64 days.
 
-So in theory, according to this extensive test data, investing in a buy signal will result in a 4.49% gain when sold at the sell signal (about 64 days later). The more buy signals you invest in, the closer your returns are expected to align with these figures.
+So in theory, according to this extensive test data, investing in a buy signal will result in a 4.49% gain when sold at the sell signal (about 64 days later). The more buy signals you invest in, the closer your returns will align with these figures.
 
-Predicting the average yearly ROI from this data is challenging, if not impossible, as it depends on numerous factors such as the number of buy signals invested in, compounding of funds, and how the market is performing.
+Predicting the average yearly ROI from this data is challenging, if not impossible, since it depends on many factors such as the number of buy signals invested in, compounding of your funds, and how the market is performing.
 
-But for a simplistic estimation based on our data, we can assume investments in 64-day periods:
+But for a very simple estimation based on our data, we can assume investments in 64-day periods:
 
 - Day 1: Invest $100 evenly across x stocks with buy signals.
 - Day 65: With $104.49, reinvest across x stocks.
@@ -170,9 +170,9 @@ But for a simplistic estimation based on our data, we can assume investments in 
 - Day 257: With $119.20, reinvest.
 - Day 321: With $124.55. Assume year ends.
 
-In this extremely basic scenario, the gain would be 24.55% in 0.88 years. In a more realistic setting, with consistent investments and compounding, and a larger number of buy signals, the actual returns could surpass this figure.
+In this very basic scenario, the gain would be 24.55% in 0.88 years. In a more realistic setting, with consistent investments and compounding, and a larger number of buy signals, the actual returns could surpass this figure.
 
-It's important to note that this data and average ROI is generated solely by the bot, without human intervention. If desired, users can apply their own investment logic, including the use of stop prices.
+It's important to note that this data and average ROI is generated only by the bot's decisions, and without human intervention. If desired, users can apply their own investment logic, including the use of stop prices.
 
 ## Other Information
 
@@ -182,7 +182,7 @@ STOCKBOT was built in python 3.11.7 with the following libraries:
 - [pandas](https://pandas.pydata.org/): Data manipulation and analysis.
 - [TA-lib](https://ta-lib.org/): Technical analysis of financial markets.
 - [numpy](https://numpy.org/): Scientific computing with Python.
-- [smtplib](https://docs.python.org/3/library/smtplib.html): Sending emails using the Simple Mail Transfer Protocol.
+- [smtplib](https://docs.python.org/3/library/smtplib.html): Sending emails using the SMTP.
 - [datetime](https://docs.python.org/3/library/datetime.html): Allows for manipulating dates and times.
 
 Dependencies and versions are specified in requirements.txt
@@ -194,9 +194,7 @@ Your comments or suggestions are extremely appreciated, so please reach out!
 Text 📱: 208-989-8541  
 Email 📧: iamdylanhoag@gmail.com
 
-Feel free to pull the code from this repository or ask to get added to the daily emails!
-
-Stay tuned for future projects and updates!
+Feel free to also ask to get added to the daily emails!
 
 -Dylan Hoag 😊
 
