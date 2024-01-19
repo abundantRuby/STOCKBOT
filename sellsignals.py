@@ -111,17 +111,17 @@ def send_email(sell_list):
 
     body += "\nBest regards,\nYour Trading Bot"
 
-    to_email = 'dysco712@gmail.com'  # Replace with the recipient's email address
+    to_emails = ['dysco712@gmail.com', '79dmarbles@gmail.com']
 
     message = MIMEText(body)
     message['Subject'] = subject
     message['From'] = from_email
-    message['To'] = to_email
+    message['To'] = ', '.join(to_emails)
 
     try:
         with smtplib.SMTP_SSL('smtp.gmail.com', 465) as server:
             server.login(from_email, password)
-            server.sendmail(from_email, to_email, message.as_string())
+            server.sendmail(from_email, to_emails, message.as_string())
         print("Email sent successfully!")
     except Exception as e:
         print(f"Failed to send email. Error: {e}")
