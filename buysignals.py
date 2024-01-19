@@ -148,7 +148,9 @@ def main():
                      "OMC", "HUBB", "ATO", "HOLX", "HRL", "NTRS", "STX", "FSLR", "LUV", "RF", "CMS", "J", "CINF", "SWKS", "JBL", "WDC", "EG", "CE", "TER", "ESS", "BBY", "AVY", "L", "TSN", "IEX", "MAA", "TXT", "EQT", "LW", "DGX", "SYF", "LDOS", "MAS", "ENPH", 
                      "SNA", "PKG", "GEN", "ALB", "POOL", "CFG", "CF", "SWK", "FOX", "FOXA", "MGM", "DPZ", "NDSN", "AMCR", "NWS", "BEN", "INCY", "NWSA", "VTRS", "PODD", "HST", "KIM", "CAG", "BG", "SJM", "MRO", "RVTY", "TAP", "CBOE", "KEY", "UAL", "IP", "CPB", 
                      "LNT", "ZBRA", "TRMB", "UDR", "LKQ", "EVRG", "AES", "IPG", "JKHY", "AOS", "NI", "JNPR", "REG", "TFX", "PNR", "NRG", "TECH", "PEAK", "PAYC", "GL", "KMX", "BXP", "CRL", "UHS", "MOS", "WRK", "WYNN", "CPT", "FFIV", "ALLE", "EMN", "CDAY", "CHRW", 
-                     "MKTX", "HII", "MTCH", "APA", "DVA", "QRVO", "HSIC", "CZR", "BBWI", "BIO", "RL", "CTLT", "PARA", "AIZ", "AAL", "RHI", "ETSY", "FRT", "TPR", "PNW", "IVZ", "XRAY", "BWA", "GNRC", "FMC", "CMA", "NCLH", "HAS", "MHK", "VFC", "WHR", "ZION"]
+                     "MKTX", "HII", "MTCH", "APA", "DVA", "QRVO", "HSIC", "CZR", "BBWI", "BIO", "RL", "CTLT", "PARA", "AIZ", "AAL", "RHI", "ETSY", "FRT", "TPR", "PNW", "IVZ", "XRAY", "BWA", "GNRC", "FMC", "CMA", "NCLH", "HAS", "MHK", "VFC", "WHR", "ZION", "RIVN",
+                     "APLS", "BROS", "HLN", "ALLY", "GSK", "PLNT", "GOLD", "MARA", "RIOT", "ANF", "GPRO", "JYNT", "BVS", "NFGC", "OPK", "RMCF", "U", "LYFT", "EDR", "RBLX", "DDOG", "BN", "PARR", "LANC", "SQ", "AESI", "NET", "RIO", "EXAS", "PINS", "HMC", "KNF",
+                     "SE", "DO", "PI", "TSM"]
 
     start_date = datetime(2022, 1, 1)
     end_date = datetime.now()
