@@ -150,7 +150,7 @@ def main():
                      "LNT", "ZBRA", "TRMB", "UDR", "LKQ", "EVRG", "AES", "IPG", "JKHY", "AOS", "NI", "JNPR", "REG", "TFX", "PNR", "NRG", "TECH", "PEAK", "PAYC", "GL", "KMX", "BXP", "CRL", "UHS", "MOS", "WRK", "WYNN", "CPT", "FFIV", "ALLE", "EMN", "CDAY", "CHRW", 
                      "MKTX", "HII", "MTCH", "APA", "DVA", "QRVO", "HSIC", "CZR", "BBWI", "BIO", "RL", "CTLT", "PARA", "AIZ", "AAL", "RHI", "ETSY", "FRT", "TPR", "PNW", "IVZ", "XRAY", "BWA", "GNRC", "FMC", "CMA", "NCLH", "HAS", "MHK", "VFC", "WHR", "ZION", "RIVN",
                      "APLS", "BROS", "HLN", "ALLY", "GSK", "PLNT", "GOLD", "MARA", "RIOT", "ANF", "GPRO", "JYNT", "BVS", "NFGC", "OPK", "RMCF", "U", "LYFT", "EDR", "RBLX", "DDOG", "BN", "PARR", "LANC", "SQ", "AESI", "NET", "RIO", "EXAS", "PINS", "HMC", "KNF",
-                     "SE", "DO", "PI", "TSM"]
+                     "SE", "DO", "PI", "TSM", "CX", "SRPT", "YUMC"]
 
     start_date = datetime(2022, 1, 1)
     end_date = datetime.now()
