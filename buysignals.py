@@ -117,7 +117,7 @@ def send_email(stock_list):
 
     body += "\nBest regards,\nYour Trading Bot"
 
-    to_emails = ['dysco712@gmail.com', '79dmarbles@gmail.com']
+    to_emails = ['dysco712@gmail.com', '79dmarbles@gmail.com', 'demise226565@gmail.com']
 
     message = MIMEText(body)
     message['Subject'] = subject
